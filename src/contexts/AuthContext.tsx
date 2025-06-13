@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
+import { storage } from '../utils/local-storage';
 
 interface AuthContextType {
   token: string | null;
@@ -11,16 +12,16 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+  const [token, setToken] = useState<string | null>(storage.get('token'));
 
   const login = (newToken: string) => {
     setToken(newToken);
-    localStorage.setItem('token', newToken);
+    storage.set('token', newToken);
   };
 
   const logout = () => {
     setToken(null);
-    localStorage.removeItem('token');
+    storage.remove('token');
   };
 
   return (

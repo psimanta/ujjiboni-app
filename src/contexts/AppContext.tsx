@@ -1,22 +1,30 @@
 import type { MantineColorScheme } from '@mantine/core';
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+} from 'react';
 import { storage } from '../utils/local-storage';
 
+const getSystemColorScheme = (): MantineColorScheme => {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+};
 interface AppContextType {
   colorScheme: MantineColorScheme;
+  setColorScheme: Dispatch<SetStateAction<MantineColorScheme>>;
   toggleColorScheme: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-const getSystemColorScheme = (): MantineColorScheme => {
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-};
-
 export function AppContextProvider({ children }: { children: ReactNode }) {
   const [colorScheme, setColorScheme] = useState<MantineColorScheme>(() => {
     // First try to get from localStorage
-    const storedTheme = storage.get<MantineColorScheme>('theme');
+    const storedTheme = storage.get<MantineColorScheme>('ujjiboni-app-color-scheme');
     if (storedTheme) return storedTheme;
 
     // If no stored theme, use system preference
@@ -25,7 +33,7 @@ export function AppContextProvider({ children }: { children: ReactNode }) {
 
   // Save to localStorage whenever colorScheme changes
   useEffect(() => {
-    storage.set('theme', colorScheme);
+    storage.set('ujjiboni-app-color-scheme', colorScheme);
   }, [colorScheme]);
 
   const toggleColorScheme = () => {
@@ -33,7 +41,9 @@ export function AppContextProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AppContext.Provider value={{ colorScheme, toggleColorScheme }}>{children}</AppContext.Provider>
+    <AppContext.Provider value={{ colorScheme, setColorScheme, toggleColorScheme }}>
+      {children}
+    </AppContext.Provider>
   );
 }
 

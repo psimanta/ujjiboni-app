@@ -1,8 +1,14 @@
-import { AppShell, Burger, Group } from '@mantine/core';
+import { AppShell, Image, Group } from '@mantine/core';
 import { Outlet } from 'react-router-dom';
 import { ThemeToggle } from '../components/ThemeToggle';
+import logo from '../assets/ujjiboni_logo.png';
+import { useProfileQuery } from '../queries/auth.queries';
 
 export function AppLayout() {
+  const { data: profile } = useProfileQuery();
+
+  console.log(profile);
+
   return (
     <AppShell header={{ height: 60 }} padding="md" layout="default" withBorder={false}>
       <AppShell.Header
@@ -13,9 +19,18 @@ export function AppLayout() {
           right: 0,
           zIndex: 1000,
         }}
+        className="shadow-sm"
       >
         <Group h="100%" px="md" justify="space-between">
-          <Burger opened={false} hiddenFrom="sm" size="sm" />
+          <Group gap={4}>
+            <Image
+              src={logo}
+              alt="Ujjiboni Logo"
+              style={{ width: 36, height: 36, cursor: 'pointer' }}
+              onClick={() => (window.location.href = '/')}
+            />
+          </Group>
+          {/* <Burger opened={false} hiddenFrom="sm" size="sm" /> */}
           <ThemeToggle />
         </Group>
       </AppShell.Header>

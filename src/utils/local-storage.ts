@@ -1,4 +1,4 @@
-type StorageKey = 'theme' | 'auth_token';
+type StorageKey = 'ujjiboni-app-color-scheme' | 'token';
 
 export const storage = {
   get: <T>(key: StorageKey): T | null => {
