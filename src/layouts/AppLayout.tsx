@@ -6,9 +6,10 @@ import { useProfileQuery } from '../queries/auth.queries';
 import { IconPower } from '@tabler/icons-react';
 import { useStore } from '../store';
 import { useEffect } from 'react';
+import { FullPageLoader } from '../components/FullPageLoader';
 
 export function AppLayout() {
-  const { isError } = useProfileQuery();
+  const { isError, isPending } = useProfileQuery();
   const { logout, isAuthenticated } = useStore(state => state);
 
   useEffect(() => {
@@ -51,9 +52,13 @@ export function AppLayout() {
       </AppShell.Header>
 
       <AppShell.Main>
-        <Container className="h-[calc(100vh-100px)]">
-          <Outlet />
-        </Container>
+        {isPending ? (
+          <FullPageLoader />
+        ) : (
+          <Container className="h-[calc(100vh-100px)]">
+            <Outlet />
+          </Container>
+        )}
       </AppShell.Main>
     </AppShell>
   );
