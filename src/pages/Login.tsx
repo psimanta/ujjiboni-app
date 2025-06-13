@@ -1,9 +1,14 @@
-import { TextInput, PasswordInput, Button, Paper, Title, Container, Group } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { ThemeToggle } from '../components/ThemeToggle';
-import { useLoginMutation } from '../queries/auth.queries';
+import {
+  TextInput,
+  PasswordInput,
+  Button,
+  Paper,
+  Container,
+} from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { useLoginMutation } from "../queries/auth.queries";
 
 interface LoginForm {
   email: string;
@@ -13,15 +18,16 @@ interface LoginForm {
 export function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  
+
   const form = useForm<LoginForm>({
     initialValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
     validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-      password: (value) => (value.length < 6 ? 'Password must be at least 6 characters' : null),
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+      password: (value) =>
+        value.length < 6 ? "Password must be at least 6 characters" : null,
     },
   });
 
@@ -31,42 +37,42 @@ export function Login() {
     loginMutation.mutate(values, {
       onSuccess: (data) => {
         login(data.token);
-        navigate('/');
+        navigate("/");
       },
       onError: (error) => {
-        console.error('Login error:', error);
+        console.error("Login error:", error);
         // TODO: Add proper error handling
       },
     });
   };
 
   return (
-    <Container size={420} my={40}>
-      <Group justify="space-between" mb={30}>
-        <Title ta="center">Welcome back!</Title>
-        <ThemeToggle />
-      </Group>
-      
+    <Container size={420} my={40} style={{ 
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}>
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput
             label="Email"
             placeholder="you@example.com"
             required
-            {...form.getInputProps('email')}
+            {...form.getInputProps("email")}
           />
-          
+
           <PasswordInput
             label="Password"
             placeholder="Your password"
             required
             mt="md"
-            {...form.getInputProps('password')}
+            {...form.getInputProps("password")}
           />
-          
-          <Button 
-            fullWidth 
-            mt="xl" 
+
+          <Button
+            fullWidth
+            mt="xl"
             type="submit"
             loading={loginMutation.isPending}
           >
@@ -76,4 +82,4 @@ export function Login() {
       </Paper>
     </Container>
   );
-} 
+}
