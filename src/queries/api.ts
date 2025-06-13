@@ -25,8 +25,8 @@ export const api = axios.create({
 
 // Add a response interceptor to handle token expiration
 api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
+  response => response,
+  async error => {
     if (error.response?.status === 401) {
       // Clear token and redirect to login
       localStorage.removeItem('token');
@@ -34,4 +34,4 @@ api.interceptors.response.use(
     }
     return Promise.reject(error);
   }
-); 
+);

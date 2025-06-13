@@ -13,7 +13,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [colorScheme, setColorScheme] = useState<MantineColorScheme>('light');
 
   const toggleColorScheme = () => {
-    setColorScheme((current) => (current === 'dark' ? 'light' : 'dark'));
+    setColorScheme(current => (current === 'dark' ? 'light' : 'dark'));
   };
 
   return (
@@ -29,4 +29,4 @@ export function useTheme() {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
-} 
+}

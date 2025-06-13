@@ -13,11 +13,7 @@ export function ThemeToggle() {
       size="lg"
       aria-label="Toggle color scheme"
     >
-      {computedColorScheme === 'dark' ? (
-        <IconSun size={18} />
-      ) : (
-        <IconMoon size={18} />
-      )}
+      {computedColorScheme === 'dark' ? <IconSun size={18} /> : <IconMoon size={18} />}
     </ActionIcon>
   );
-} 
+}

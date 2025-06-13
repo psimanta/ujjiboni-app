@@ -1,15 +1,10 @@
-import { AppShell, Burger, Group } from "@mantine/core";
-import { Outlet } from "react-router-dom";
-import { ThemeToggle } from "../components/ThemeToggle";
+import { AppShell, Burger, Group } from '@mantine/core';
+import { Outlet } from 'react-router-dom';
+import { ThemeToggle } from '../components/ThemeToggle';
 
 export function AppLayout() {
   return (
-    <AppShell
-      header={{ height: 60 }}
-      padding="md"
-      layout="default"
-      withBorder={false}
-    >
+    <AppShell header={{ height: 60 }} padding="md" layout="default" withBorder={false}>
       <AppShell.Header
         style={{
           position: 'fixed',
@@ -30,4 +25,4 @@ export function AppLayout() {
       </AppShell.Main>
     </AppShell>
   );
-} 
+}
