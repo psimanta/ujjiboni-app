@@ -1,16 +1,40 @@
-import { AppShell, Image, Group, Container, ActionIcon } from '@mantine/core';
-import { Outlet } from 'react-router-dom';
+import {
+  AppShell,
+  Image,
+  Group,
+  Container,
+  ActionIcon,
+  NavLink,
+  Stack,
+  Burger,
+} from '@mantine/core';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useDisclosure } from '@mantine/hooks';
 import { ThemeToggle } from '../components/ThemeToggle';
 import logo from '../assets/ujjiboni_logo.png';
 import { useProfileQuery } from '../queries/auth.queries';
-import { IconPower } from '@tabler/icons-react';
+import {
+  IconPower,
+  IconLayoutDashboard,
+  IconSettings,
+  IconBuildingBank,
+} from '@tabler/icons-react';
 import { useStore } from '../store';
 import { useEffect } from 'react';
 import { FullPageLoader } from '../components/FullPageLoader';
 
+const navigationItems = [
+  { label: 'Dashboard', icon: IconLayoutDashboard, path: '/' },
+  { label: 'Accounts', icon: IconBuildingBank, path: '/accounts' },
+  { label: 'Settings', icon: IconSettings, path: '/settings' },
+];
+
 export function AppLayout() {
   const { isError, isPending } = useProfileQuery();
   const { logout, isAuthenticated } = useStore(state => state);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [opened, { toggle, close }] = useDisclosure();
 
   useEffect(() => {
     if (isError) {
@@ -19,7 +43,21 @@ export function AppLayout() {
   }, [isError, logout]);
 
   return (
-    <AppShell header={{ height: 60 }} padding="md" layout="default" withBorder={false}>
+    <AppShell
+      header={{ height: 60 }}
+      navbar={
+        isAuthenticated
+          ? {
+              width: 280,
+              breakpoint: 'sm',
+              collapsed: { mobile: !opened },
+            }
+          : undefined
+      }
+      padding="md"
+      layout="default"
+      withBorder
+    >
       <AppShell.Header
         style={{
           position: 'fixed',
@@ -28,7 +66,6 @@ export function AppLayout() {
           right: 0,
           zIndex: 1000,
         }}
-        className="shadow-sm"
       >
         <Group h={60} px="md" justify="space-between">
           <Group gap={4}>
@@ -39,23 +76,50 @@ export function AppLayout() {
               onClick={() => (window.location.href = '/')}
             />
           </Group>
-          {/* <Burger opened={false} hiddenFrom="sm" size="sm" /> */}
           <Group gap={8}>
             <ThemeToggle />
             {isAuthenticated && (
-              <ActionIcon variant="transparent" onClick={() => logout()}>
-                <IconPower color="var(--mantine-color-red-5)" size={22} stroke={1.5} />
-              </ActionIcon>
+              <>
+                <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+                <ActionIcon variant="transparent" onClick={() => logout()}>
+                  <IconPower color="var(--mantine-color-red-5)" size={22} stroke={1.5} />
+                </ActionIcon>
+              </>
             )}
           </Group>
         </Group>
       </AppShell.Header>
 
+      {isAuthenticated && (
+        <AppShell.Navbar p="md">
+          <Stack gap="xs">
+            {/* Navigation Items */}
+            {navigationItems.map(item => (
+              <NavLink
+                key={item.path}
+                href={item.path}
+                label={item.label}
+                leftSection={<item.icon size={20} stroke={1.5} />}
+                active={location.pathname === item.path}
+                onClick={e => {
+                  e.preventDefault();
+                  navigate(item.path);
+                  close(); // Close sidebar on mobile after navigation
+                }}
+                style={{
+                  borderRadius: 'var(--mantine-radius-sm)',
+                }}
+              />
+            ))}
+          </Stack>
+        </AppShell.Navbar>
+      )}
+
       <AppShell.Main>
         {isPending ? (
           <FullPageLoader />
         ) : (
-          <Container className="h-[calc(100vh-100px)]">
+          <Container className="h-[calc(100vh-100px)]" size="xl">
             <Outlet />
           </Container>
         )}

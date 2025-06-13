@@ -6,7 +6,7 @@ export function HomePage() {
   const { user } = useStore(state => state);
 
   return (
-    <Container size="md" py="xl">
+    <Container size="xl" py="xl">
       <Stack gap="xl">
         <Stack gap="md" align="flex-start">
           <Group gap="sm">

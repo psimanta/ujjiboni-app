@@ -8,6 +8,7 @@ import {
   Group,
   Alert,
   Text,
+  Transition,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { Link, useNavigate } from 'react-router-dom';
@@ -69,14 +70,19 @@ export function Login() {
             transition={{ duration: 0.5 }}
           />
         </div>
-        {error && (
-          <Alert color="red" my="md" radius="md" withCloseButton onClose={() => setError(null)}>
-            <Group gap={8}>
-              <IconAlertCircle size={16} color="var(--mantine-color-red-5)" />
-              <Text c="var(--mantine-color-red-5)">{error}</Text>
-            </Group>
-          </Alert>
-        )}
+        <Transition mounted={error !== null} transition="fade" duration={500}>
+          {styles => (
+            <div style={styles}>
+              <Alert color="red" my="md" radius="md" withCloseButton onClose={() => setError(null)}>
+                <Group gap={8}>
+                  <IconAlertCircle size={16} color="var(--mantine-color-red-5)" />
+                  <Text c="var(--mantine-color-red-5)">{error}</Text>
+                </Group>
+              </Alert>
+            </div>
+          )}
+        </Transition>
+
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput
             label="Email"
