@@ -1,10 +1,23 @@
-import { TextInput, PasswordInput, Button, Paper, Container, Anchor, Group } from '@mantine/core';
+import {
+  TextInput,
+  PasswordInput,
+  Button,
+  Paper,
+  Container,
+  Anchor,
+  Group,
+  Alert,
+  Text,
+} from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
 import { useLoginMutation } from '../queries/auth.queries';
 import logo from '../assets/ujjiboni_logo.png';
 import { motion } from 'framer-motion';
+import { useStore } from '../store';
+import { storage } from '../utils/local-storage';
+import { useState } from 'react';
+import { IconAlertCircle } from '@tabler/icons-react';
 
 interface LoginForm {
   email: string;
@@ -12,7 +25,8 @@ interface LoginForm {
 }
 
 export function Login() {
-  const { login } = useAuth();
+  const { setIsAuthenticated } = useStore();
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const form = useForm<LoginForm>({
@@ -31,12 +45,13 @@ export function Login() {
   const handleSubmit = (values: LoginForm) => {
     loginMutation.mutate(values, {
       onSuccess: data => {
-        login(data.token);
+        storage.set('token', data.token);
+        setIsAuthenticated(true);
         navigate('/');
       },
       onError: error => {
-        console.error('Login error:', error);
-        // TODO: Add proper error handling
+        setError(error.message);
+        setIsAuthenticated(false);
       },
     });
   };
@@ -54,13 +69,27 @@ export function Login() {
             transition={{ duration: 0.5 }}
           />
         </div>
+        {error && (
+          <Alert color="red" my="md" radius="md" withCloseButton onClose={() => setError(null)}>
+            <Group gap={8}>
+              <IconAlertCircle size={16} color="var(--mantine-color-red-5)" />
+              <Text c="var(--mantine-color-red-5)">{error}</Text>
+            </Group>
+          </Alert>
+        )}
         <form onSubmit={form.onSubmit(handleSubmit)}>
-          <TextInput label="Email" placeholder="you@example.com" {...form.getInputProps('email')} />
+          <TextInput
+            label="Email"
+            placeholder="you@example.com"
+            radius="md"
+            {...form.getInputProps('email')}
+          />
 
           <PasswordInput
             label="Password"
             placeholder="Your password"
             mt="md"
+            radius="md"
             {...form.getInputProps('password')}
           />
 
@@ -70,7 +99,7 @@ export function Login() {
             </Anchor>
           </Group>
 
-          <Button fullWidth mt="xl" type="submit" loading={loginMutation.isPending}>
+          <Button fullWidth mt="xl" type="submit" loading={loginMutation.isPending} radius="md">
             Sign in
           </Button>
         </form>

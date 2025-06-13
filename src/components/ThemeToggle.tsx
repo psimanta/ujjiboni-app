@@ -1,17 +1,11 @@
 import { Switch } from '@mantine/core';
 import { IconMoonStars, IconSun } from '@tabler/icons-react';
-import { useAppContext } from '../contexts/AppContext';
-import { storage } from '../utils/local-storage';
-import { useEffect } from 'react';
+import { useStore } from '../store';
 
 export function ThemeToggle() {
-  const { toggleColorScheme, colorScheme } = useAppContext();
+  const { toggleTheme, theme } = useStore();
 
-  const checked = colorScheme === 'dark';
-
-  useEffect(() => {
-    storage.set('ujjiboni-app-color-scheme', colorScheme);
-  }, [colorScheme]);
+  const checked = theme === 'dark';
 
   return (
     <>
@@ -28,7 +22,7 @@ export function ThemeToggle() {
         //   )
         // }
         checked={checked}
-        onChange={toggleColorScheme}
+        onChange={toggleTheme}
       />
     </>
   );

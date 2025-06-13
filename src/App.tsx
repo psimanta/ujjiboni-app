@@ -1,13 +1,12 @@
 import { MantineProvider, createTheme } from '@mantine/core';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { AuthProvider } from './contexts/AuthContext';
-import { AppContextProvider, useAppContext } from './contexts/AppContext';
 import { queryClient } from './queries/queryClient';
 import { AppRouter } from './router';
+import { useStore } from './store';
 
 function AppContent() {
-  const { colorScheme } = useAppContext();
+  const { theme: colorScheme } = useStore();
 
   const theme = createTheme({
     cursorType: 'pointer',
@@ -24,13 +23,7 @@ function AppContent() {
 }
 
 function App() {
-  return (
-    <AppContextProvider>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
-    </AppContextProvider>
-  );
+  return <AppContent />;
 }
 
 export default App;

@@ -1,13 +1,21 @@
-import { AppShell, Image, Group, Container } from '@mantine/core';
+import { AppShell, Image, Group, Container, ActionIcon } from '@mantine/core';
 import { Outlet } from 'react-router-dom';
 import { ThemeToggle } from '../components/ThemeToggle';
 import logo from '../assets/ujjiboni_logo.png';
 import { useProfileQuery } from '../queries/auth.queries';
+import { IconPower } from '@tabler/icons-react';
+import { useStore } from '../store';
+import { useEffect } from 'react';
 
 export function AppLayout() {
-  const { data: profile, error } = useProfileQuery();
+  const { isError } = useProfileQuery();
+  const { logout, isAuthenticated } = useStore(state => state);
 
-  console.log(profile, error);
+  useEffect(() => {
+    if (isError) {
+      logout();
+    }
+  }, [isError, logout]);
 
   return (
     <AppShell header={{ height: 60 }} padding="md" layout="default" withBorder={false}>
@@ -31,7 +39,14 @@ export function AppLayout() {
             />
           </Group>
           {/* <Burger opened={false} hiddenFrom="sm" size="sm" /> */}
-          <ThemeToggle />
+          <Group gap={8}>
+            <ThemeToggle />
+            {isAuthenticated && (
+              <ActionIcon variant="transparent" onClick={() => logout()}>
+                <IconPower color="var(--mantine-color-red-5)" size={22} stroke={1.5} />
+              </ActionIcon>
+            )}
+          </Group>
         </Group>
       </AppShell.Header>
 

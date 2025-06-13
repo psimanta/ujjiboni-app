@@ -4,6 +4,7 @@ import { QUERY_KEYS } from '../constants/queries';
 import type { IUser } from '../interfaces/user.interface';
 import type { IResponseError, IResponseGeneric } from '../interfaces/response.interface';
 import type { IRequestConfig } from '../interfaces/request.interface';
+import { useStore } from '../store';
 
 interface ILoginCredentials {
   email: string;
@@ -12,6 +13,10 @@ interface ILoginCredentials {
 
 interface ILoginResponse extends IResponseGeneric {
   token: string;
+  user: IUser;
+}
+
+interface IProfileResponse extends IResponseGeneric {
   user: IUser;
 }
 
@@ -31,16 +36,19 @@ export const useLoginMutation = () => {
 };
 
 export const useProfileQuery = () => {
-  return useQuery<ILoginResponse, IResponseError>({
+  const { setUser } = useStore(state => state);
+  return useQuery<IProfileResponse, IResponseError>({
     queryKey: [QUERY_KEYS.PROFILE],
     queryFn: async () => {
       const { data } = await api.get<ILoginResponse>('/auth/profile');
+      setUser(data.user);
       return data;
     },
+    staleTime: 0,
+    gcTime: 0,
     refetchOnWindowFocus: true,
     refetchOnMount: true,
     refetchOnReconnect: true,
-    refetchInterval: 1000 * 60 * 5, // 5 minutes
     retry: 3,
   });
 };
