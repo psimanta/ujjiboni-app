@@ -1,8 +1,9 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from './api';
 import { QUERY_KEYS } from '../constants/queries';
 import type { IUser } from '../interfaces/user.interface';
-import type { IResponseGeneric } from '../interfaces/response.interface';
+import type { IResponseError, IResponseGeneric } from '../interfaces/response.interface';
+import type { IRequestConfig } from '../interfaces/request.interface';
 
 interface ILoginCredentials {
   email: string;
@@ -15,16 +16,22 @@ interface ILoginResponse extends IResponseGeneric {
 }
 
 export const useLoginMutation = () => {
-  return useMutation({
+  const queryClient = useQueryClient();
+  return useMutation<ILoginResponse, IResponseError, ILoginCredentials>({
     mutationFn: async (credentials: ILoginCredentials) => {
-      const { data } = await api.post<ILoginResponse>('/auth/login', credentials);
+      const { data } = await api.post<ILoginResponse>('/auth/login', credentials, {
+        skipAuth: true,
+      } as IRequestConfig);
       return data;
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PROFILE] });
     },
   });
 };
 
 export const useProfileQuery = () => {
-  return useQuery({
+  return useQuery<ILoginResponse, IResponseError>({
     queryKey: [QUERY_KEYS.PROFILE],
     queryFn: async () => {
       const { data } = await api.get<ILoginResponse>('/auth/profile');
@@ -34,5 +41,6 @@ export const useProfileQuery = () => {
     refetchOnMount: true,
     refetchOnReconnect: true,
     refetchInterval: 1000 * 60 * 5, // 5 minutes
+    retry: 3,
   });
 };

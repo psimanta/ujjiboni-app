@@ -1,13 +1,13 @@
-import { AppShell, Image, Group } from '@mantine/core';
+import { AppShell, Image, Group, Container } from '@mantine/core';
 import { Outlet } from 'react-router-dom';
 import { ThemeToggle } from '../components/ThemeToggle';
 import logo from '../assets/ujjiboni_logo.png';
 import { useProfileQuery } from '../queries/auth.queries';
 
 export function AppLayout() {
-  const { data: profile } = useProfileQuery();
+  const { data: profile, error } = useProfileQuery();
 
-  console.log(profile);
+  console.log(profile, error);
 
   return (
     <AppShell header={{ height: 60 }} padding="md" layout="default" withBorder={false}>
@@ -21,7 +21,7 @@ export function AppLayout() {
         }}
         className="shadow-sm"
       >
-        <Group h="100%" px="md" justify="space-between">
+        <Group h={60} px="md" justify="space-between">
           <Group gap={4}>
             <Image
               src={logo}
@@ -35,8 +35,10 @@ export function AppLayout() {
         </Group>
       </AppShell.Header>
 
-      <AppShell.Main pt={60} style={{ paddingTop: 60 }}>
-        <Outlet />
+      <AppShell.Main>
+        <Container className="h-[calc(100vh-100px)]">
+          <Outlet />
+        </Container>
       </AppShell.Main>
     </AppShell>
   );
