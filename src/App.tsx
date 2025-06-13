@@ -5,7 +5,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { useTheme } from './contexts/ThemeContext';
 import { queryClient } from './queries/queryClient';
-import { AppRouter } from '../router/router';
+import { AppRouter } from './router/router';
 
 function AppContent() {
   const { colorScheme } = useTheme();

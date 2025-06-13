@@ -1,6 +1,6 @@
-import { AppLayout } from "../src/layouts/AppLayout";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { Login } from "../src/pages/Login";
+import { AppLayout } from '../layouts/AppLayout';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Login } from '../pages/Login';
 
 function Home() {
   return <div>Ujjiboni</div>;

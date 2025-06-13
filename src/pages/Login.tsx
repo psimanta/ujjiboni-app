@@ -40,29 +40,14 @@ export function Login() {
   };
 
   return (
-    <Container
-      size={420}
-      my={40}
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <Container size={420} my={40} style={{ display: 'flex' }}>
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
         <form onSubmit={form.onSubmit(handleSubmit)}>
-          <TextInput
-            label="Email"
-            placeholder="you@example.com"
-            required
-            {...form.getInputProps('email')}
-          />
+          <TextInput label="Email" placeholder="you@example.com" {...form.getInputProps('email')} />
 
           <PasswordInput
             label="Password"
             placeholder="Your password"
-            required
             mt="md"
             {...form.getInputProps('password')}
           />
