@@ -4,6 +4,7 @@ import { Login } from './pages/LoginPage';
 import { HomePage } from './pages/HomePage';
 import { useStore } from './store';
 import { AccountsPage } from './pages/AccountsPage';
+import { AccountDetailsPage } from './pages/AccountDetailsPage';
 
 export const AppRouter = () => {
   const { isAuthenticated } = useStore(state => state);
@@ -15,6 +16,7 @@ export const AppRouter = () => {
             <>
               <Route path="/" element={<HomePage />} />
               <Route path="/accounts" element={<AccountsPage />} />
+              <Route path="/accounts/:id" element={<AccountDetailsPage />} />
             </>
           ) : (
             <>

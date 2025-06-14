@@ -9,25 +9,35 @@ import {
   Skeleton,
   NumberFormatter,
   Title,
+  Button,
 } from '@mantine/core';
-import { IconBuildingBank, IconEye, IconArrowRight } from '@tabler/icons-react';
+import { IconBuildingBank, IconArrowRight, IconPlus } from '@tabler/icons-react';
+import { useDisclosure } from '@mantine/hooks';
 import { useAccountsQuery } from '../../queries/account.queries';
-
-// Generate dummy balance for demonstration
-const generateDummyBalance = (accountId: string) => {
-  const seed = accountId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  return (seed % 500000) + 50000; // Balance between 50,000 and 550,000 BDT
-};
+import { CreateAccountModal } from './CreateAccountModal';
+import { useNavigate } from 'react-router-dom';
 
 export function ListAccounts() {
   const { data, isPending } = useAccountsQuery();
-  const accounts = data?.accounts;
+  const accounts = data?.accounts || [];
+  const [modalOpened, { open: openModal, close: closeModal }] = useDisclosure(false);
+  const navigate = useNavigate();
 
   return (
     <Stack gap="lg">
-      <Title order={2} size="h3" fw={600}>
-        Accounts
-      </Title>
+      <Group justify="space-between" align="center">
+        <Title order={2} size="h3" fw={600}>
+          Accounts
+        </Title>
+        <Button
+          leftSection={<IconPlus size={16} />}
+          onClick={openModal}
+          variant="filled"
+          radius="md"
+        >
+          Create Account
+        </Button>
+      </Group>
 
       {isPending ? (
         <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="md">
@@ -36,7 +46,7 @@ export function ListAccounts() {
           ))}
         </SimpleGrid>
       ) : !accounts || accounts.length === 0 ? (
-        <Card shadow="sm" padding="xl" radius="md" withBorder>
+        <Card shadow="sm" padding="xl" radius="lg" withBorder>
           <Stack align="center" gap="md">
             <IconBuildingBank size={48} stroke={1.5} color="var(--mantine-color-gray-5)" />
             <Text size="lg" fw={500} c="dimmed">
@@ -48,16 +58,16 @@ export function ListAccounts() {
           </Stack>
         </Card>
       ) : (
-        <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="md">
+        <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="lg">
           {accounts.map(account => {
-            const balance = generateDummyBalance(account.id);
+            const balance = account.balance;
 
             return (
               <Card
-                key={account.id}
+                key={account._id}
                 shadow="sm"
                 padding="lg"
-                radius="md"
+                radius="lg"
                 withBorder
                 style={{
                   cursor: 'pointer',
@@ -69,7 +79,7 @@ export function ListAccounts() {
                 }}
                 onClick={() => {
                   // Handle card click - navigate to account details
-                  console.log('Navigate to account:', account.id);
+                  console.log('Navigate to account:', account._id);
                 }}
               >
                 <Stack gap="md">
@@ -96,22 +106,11 @@ export function ListAccounts() {
                     <Group gap="xs">
                       <ActionIcon
                         variant="subtle"
-                        color="gray"
-                        size="sm"
-                        onClick={e => {
-                          e.stopPropagation();
-                          console.log('View account details:', account.id);
-                        }}
-                      >
-                        <IconEye size={16} />
-                      </ActionIcon>
-                      <ActionIcon
-                        variant="subtle"
                         color="blue"
                         size="sm"
                         onClick={e => {
                           e.stopPropagation();
-                          console.log('Navigate to account:', account.id);
+                          navigate(`/accounts/${account._id}`);
                         }}
                       >
                         <IconArrowRight size={16} />
@@ -126,9 +125,6 @@ export function ListAccounts() {
                     </Text>
                     <Text size="sm" c="dimmed" lineClamp={1}>
                       Account Holder: {account.accountHolder.fullName || 'N/A'}
-                    </Text>
-                    <Text size="xs" c="dimmed" ff="monospace">
-                      ID: {account.id}
                     </Text>
                   </Stack>
 
@@ -158,6 +154,8 @@ export function ListAccounts() {
           })}
         </SimpleGrid>
       )}
+
+      <CreateAccountModal opened={modalOpened} onClose={closeModal} />
     </Stack>
   );
 }
