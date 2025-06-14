@@ -23,7 +23,11 @@ export interface ITransaction {
   type: 'debit' | 'credit';
   amount: number;
   comment: string;
-  enteredBy: string;
+  enteredBy: {
+    _id: string;
+    email: string;
+    fullName: string;
+  };
   transactionDate: string;
   createdAt: string;
   updatedAt: string;

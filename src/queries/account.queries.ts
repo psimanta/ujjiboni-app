@@ -45,14 +45,14 @@ export const useAccountsQuery = () => {
   });
 };
 
-export const useAccountTransactionsQuery = (id: string, page: number) => {
+export const useAccountTransactionsQuery = (id: string, page: number, limit: number = 20) => {
   return useQuery<IAccountDetailsResponse, IResponseError>({
-    queryKey: [QUERY_KEYS.ACCOUNT_DETAILS, id],
+    queryKey: [QUERY_KEYS.ACCOUNT_DETAILS, id, page, limit],
     queryFn: async () => {
       const { data } = await api.get<IAccountDetailsResponse>(`/transactions/account/${id}`, {
         params: {
           page,
-          limit: 20,
+          limit,
         },
       });
       return data;
