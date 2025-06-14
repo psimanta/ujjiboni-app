@@ -14,8 +14,9 @@ import {
   Pagination,
   Select,
   Skeleton,
+  Divider,
 } from '@mantine/core';
-import { IconEye, IconArrowUp, IconArrowDown, IconReceipt } from '@tabler/icons-react';
+import { IconArrowUp, IconArrowDown, IconReceipt, IconTrash, IconEdit } from '@tabler/icons-react';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAccountTransactionsQuery } from '../../queries/account.queries';
@@ -29,16 +30,14 @@ const formatDate = (dateString: string) => {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
   });
 };
 
 const LIMIT_OPTIONS = [
+  { value: '5', label: '5 per page' },
   { value: '10', label: '10 per page' },
   { value: '20', label: '20 per page' },
   { value: '50', label: '50 per page' },
-  { value: '100', label: '100 per page' },
 ];
 
 const TransactionRow = ({ transaction }: { transaction: ITransaction }) => {
@@ -103,17 +102,31 @@ const TransactionRow = ({ transaction }: { transaction: ITransaction }) => {
       </Table.Td>
 
       <Table.Td>
-        <Group gap="xs" justify="flex-end">
-          <Tooltip label="View Details">
+        <Group gap="xs" justify="center">
+          <Tooltip label="Edit Transaction">
             <ActionIcon
               variant="subtle"
               color="gray"
+              disabled
               size="sm"
               onClick={() => {
                 console.log('View transaction details:', transaction._id);
               }}
             >
-              <IconEye size={16} />
+              <IconEdit size={16} />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip label="Delete Transaction">
+            <ActionIcon
+              variant="subtle"
+              color="red"
+              disabled
+              size="sm"
+              onClick={() => {
+                console.log('View transaction details:', transaction._id);
+              }}
+            >
+              <IconTrash size={16} />
             </ActionIcon>
           </Tooltip>
         </Group>
@@ -129,7 +142,7 @@ export function TransactionsTable({
 }) {
   const { id } = useParams();
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState('20');
+  const [limit, setLimit] = useState('5');
   const { data, isPending } = useAccountTransactionsQuery(id || '', page, parseInt(limit));
 
   const transactions = data?.transactions || [];
@@ -162,25 +175,29 @@ export function TransactionsTable({
       {/* Account Summary */}
       {isPending && <Skeleton height={100} radius="md" />}
       {account && !isPending && (
-        <Card shadow="sm" padding="lg" radius="md" withBorder>
-          <Group justify="space-between" align="center">
-            <Stack gap="xs">
-              <Text size="lg" fw={600}>
-                {account.name}
-              </Text>
-              <Text size="sm" c="dimmed">
-                Account Holder: {account.accountHolder.fullName}
-              </Text>
-            </Stack>
-            <Stack gap="xs" align="flex-end">
-              <Text size="xs" c="dimmed" tt="uppercase" fw={500}>
-                Current Balance
-              </Text>
-              <Text size="xl" fw={700} c="blue">
-                <NumberFormatter value={account.balance} prefix="৳ " thousandSeparator="," />
-              </Text>
-            </Stack>
-          </Group>
+        <Card shadow="sm" padding="lg" pb={0} radius="md" withBorder>
+          <Stack gap="md">
+            <Group justify="space-between" align="center">
+              <Stack gap="xs">
+                <Text size="lg" fw={600}>
+                  {account.name}
+                </Text>
+                <Text size="sm" c="dimmed">
+                  Account Holder: {account.accountHolder.fullName}
+                </Text>
+              </Stack>
+              <Stack gap="xs" align="flex-end">
+                <Text size="xs" c="dimmed" tt="uppercase" fw={500}>
+                  Current Balance
+                </Text>
+                <Text size="xl" fw={700} c="blue">
+                  <NumberFormatter value={account.balance} prefix="৳ " thousandSeparator="," />
+                </Text>
+              </Stack>
+            </Group>
+            <Divider />
+            <TransactionForm />
+          </Stack>
         </Card>
       )}
 
@@ -201,13 +218,13 @@ export function TransactionsTable({
                 data={LIMIT_OPTIONS}
                 size="sm"
                 w={140}
+                radius="md"
               />
               <Badge variant="light" color="blue" size="lg">
                 {totalTransactions} Total
               </Badge>
             </Group>
           </Group>
-          <TransactionForm />
 
           <ScrollArea>
             <Table striped highlightOnHover withTableBorder withColumnBorders>

@@ -22,6 +22,14 @@ interface IAccountDetailsResponse extends IResponseGeneric {
   transactions: ITransaction[];
 }
 
+interface IEnterTransactionPayload {
+  accountId: string;
+  amount: number;
+  type: 'debit' | 'credit';
+  comment: string;
+  transactionDate: Date | null;
+}
+
 export const useCreateAccountMutation = () => {
   const queryClient = useQueryClient();
   return useMutation<ICreateAccountResponse, IResponseError, ICreateAccountPayload>({
@@ -56,6 +64,19 @@ export const useAccountTransactionsQuery = (id: string, page: number, limit: num
         },
       });
       return data;
+    },
+  });
+};
+
+export const useEnterTransactionMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation<IResponseGeneric, IResponseError, IEnterTransactionPayload>({
+    mutationFn: async payload => {
+      const { data } = await api.post<IResponseGeneric>('/transactions', payload);
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ACCOUNT_DETAILS] });
     },
   });
 };
