@@ -175,7 +175,7 @@ export function TransactionsTable({
       {/* Account Summary */}
       {isPending && <Skeleton height={100} radius="md" />}
       {account && !isPending && (
-        <Card shadow="sm" padding="lg" pb={0} radius="md" withBorder>
+        <Card shadow="sm" padding="lg" radius="md" withBorder>
           <Stack gap="md">
             <Group justify="space-between" align="center">
               <Stack gap="xs">
