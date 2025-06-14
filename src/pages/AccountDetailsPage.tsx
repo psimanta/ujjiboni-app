@@ -7,7 +7,7 @@ export function AccountDetailsPage() {
   const [breadCrumbItems, setBreadCrumbItems] = useState<{ label: string; href: string }[]>([]);
 
   return (
-    <Stack gap="xl" mt="md">
+    <Stack gap="xl" mt="md" pb="xl">
       <CustomBreadCrumbs items={breadCrumbItems} />
       <TransactionsTable setBreadCrumbItems={setBreadCrumbItems} />
     </Stack>

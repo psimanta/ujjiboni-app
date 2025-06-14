@@ -4,6 +4,7 @@ import { IconBuildingBank, IconUser, IconSignature } from '@tabler/icons-react';
 import { useMembersQuery } from '../../queries/user.queries';
 import { useCreateAccountMutation } from '../../queries/account.queries';
 import { useState } from 'react';
+import { ACCOUNT_TYPES } from '../../constants/account';
 
 interface CreateAccountModalProps {
   opened: boolean;
@@ -13,6 +14,7 @@ interface CreateAccountModalProps {
 interface CreateAccountFormData {
   name: string;
   accountHolder: string;
+  type: string;
 }
 
 export function CreateAccountModal({ opened, onClose }: CreateAccountModalProps) {
@@ -27,6 +29,7 @@ export function CreateAccountModal({ opened, onClose }: CreateAccountModalProps)
     initialValues: {
       name: '',
       accountHolder: '',
+      type: '',
     },
     validate: {
       name: value => {
@@ -90,6 +93,15 @@ export function CreateAccountModal({ opened, onClose }: CreateAccountModalProps)
             searchable
             radius="md"
             {...form.getInputProps('accountHolder')}
+          />
+
+          <Select
+            label="Account Type"
+            placeholder="Select account type"
+            leftSection={<IconBuildingBank size={16} />}
+            data={ACCOUNT_TYPES}
+            radius="md"
+            {...form.getInputProps('type')}
           />
 
           <Group justify="flex-end" mt="md">

@@ -13,13 +13,12 @@ import {
   Center,
   Pagination,
   Select,
-  Skeleton,
   Divider,
 } from '@mantine/core';
 import { IconArrowUp, IconArrowDown, IconReceipt, IconTrash, IconEdit } from '@tabler/icons-react';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { useAccountTransactionsQuery } from '../../queries/account.queries';
+import { useAccountDetailsQuery, useAccountTransactionsQuery } from '../../queries/account.queries';
 import type { ITransaction } from '../../interfaces/account.interface';
 import { TRANSACTION_TYPE } from '../../constants/account';
 import { TransactionTableLoading } from './loaders/TransactionTableLoading';
@@ -144,6 +143,7 @@ export function TransactionsTable({
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState('5');
   const { data, isPending } = useAccountTransactionsQuery(id || '', page, parseInt(limit));
+  const { data: accountDetails } = useAccountDetailsQuery(id || '');
 
   const transactions = data?.transactions || [];
   const account = data?.account;
@@ -173,17 +173,16 @@ export function TransactionsTable({
   return (
     <Stack gap="lg">
       {/* Account Summary */}
-      {isPending && <Skeleton height={100} radius="md" />}
-      {account && !isPending && (
-        <Card shadow="sm" padding="lg" radius="md" withBorder>
+      {accountDetails && (
+        <Card shadow="sm" padding="lg" radius="lg" withBorder>
           <Stack gap="md">
             <Group justify="space-between" align="center">
               <Stack gap="xs">
                 <Text size="lg" fw={600}>
-                  {account.name}
+                  {accountDetails.account.name}
                 </Text>
                 <Text size="sm" c="dimmed">
-                  Account Holder: {account.accountHolder.fullName}
+                  Account Holder: {accountDetails.account.accountHolder.fullName}
                 </Text>
               </Stack>
               <Stack gap="xs" align="flex-end">
@@ -191,7 +190,11 @@ export function TransactionsTable({
                   Current Balance
                 </Text>
                 <Text size="xl" fw={700} c="blue">
-                  <NumberFormatter value={account.balance} prefix="৳ " thousandSeparator="," />
+                  <NumberFormatter
+                    value={accountDetails.account.balance}
+                    prefix="৳ "
+                    thousandSeparator=","
+                  />
                 </Text>
               </Stack>
             </Group>
@@ -202,7 +205,7 @@ export function TransactionsTable({
       )}
 
       {/* Transactions Table */}
-      <Card shadow="sm" padding="lg" radius="md" withBorder>
+      <Card shadow="sm" padding="lg" radius="lg" withBorder>
         <Stack gap="md">
           <Group justify="space-between" align="center">
             <Group gap="sm">

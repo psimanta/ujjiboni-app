@@ -11,15 +11,20 @@ interface IAccountResponse extends IResponseGeneric {
 interface ICreateAccountPayload {
   name: string;
   accountHolder: string;
+  type: string;
 }
 
 interface ICreateAccountResponse extends IResponseGeneric {
   account: IAccount;
 }
 
-interface IAccountDetailsResponse extends IResponseGeneric {
+interface IAccountTransactionsResponse extends IResponseGeneric {
   account: IAccount;
   transactions: ITransaction[];
+}
+
+interface IAccountDetailsResponse extends IResponseGeneric {
+  account: IAccount;
 }
 
 interface IEnterTransactionPayload {
@@ -53,11 +58,21 @@ export const useAccountsQuery = () => {
   });
 };
 
-export const useAccountTransactionsQuery = (id: string, page: number, limit: number = 20) => {
+export const useAccountDetailsQuery = (id: string) => {
   return useQuery<IAccountDetailsResponse, IResponseError>({
-    queryKey: [QUERY_KEYS.ACCOUNT_DETAILS, id, page, limit],
+    queryKey: [QUERY_KEYS.ACCOUNT_DETAILS, id],
     queryFn: async () => {
-      const { data } = await api.get<IAccountDetailsResponse>(`/transactions/account/${id}`, {
+      const { data } = await api.get<IAccountDetailsResponse>(`/accounts/${id}`);
+      return data;
+    },
+  });
+};
+
+export const useAccountTransactionsQuery = (id: string, page: number, limit: number = 20) => {
+  return useQuery<IAccountTransactionsResponse, IResponseError>({
+    queryKey: [QUERY_KEYS.ACCOUNT_TRANSACTIONS, id, page, limit],
+    queryFn: async () => {
+      const { data } = await api.get<IAccountTransactionsResponse>(`/transactions/account/${id}`, {
         params: {
           page,
           limit,
@@ -76,7 +91,12 @@ export const useEnterTransactionMutation = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ACCOUNT_DETAILS] });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.ACCOUNT_DETAILS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.ACCOUNT_TRANSACTIONS],
+      });
     },
   });
 };

@@ -18,6 +18,8 @@ import {
   IconLayoutDashboard,
   IconSettings,
   IconBuildingBank,
+  IconUsers,
+  IconFileDollar,
 } from '@tabler/icons-react';
 import { useStore } from '../store';
 import { useEffect } from 'react';
@@ -26,6 +28,8 @@ import { FullPageLoader } from '../components/FullPageLoader';
 const navigationItems = [
   { label: 'Dashboard', icon: IconLayoutDashboard, path: '/' },
   { label: 'Accounts', icon: IconBuildingBank, path: '/accounts' },
+  { label: 'Loans', icon: IconFileDollar, path: '/loans' },
+  { label: 'Members', icon: IconUsers, path: '/members' },
   { label: 'Settings', icon: IconSettings, path: '/settings' },
 ];
 
@@ -107,7 +111,7 @@ export function AppLayout() {
                   close(); // Close sidebar on mobile after navigation
                 }}
                 style={{
-                  borderRadius: 'var(--mantine-radius-sm)',
+                  borderRadius: 'var(--mantine-radius-md)',
                 }}
               />
             ))}

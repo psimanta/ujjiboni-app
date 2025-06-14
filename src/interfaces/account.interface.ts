@@ -15,6 +15,7 @@ export interface IAccount {
   isLocked: boolean;
   createdAt: string;
   updatedAt: string;
+  type: 'savings' | 'cash' | 'fdr' | 'dps' | 'shanchaypatra' | 'other';
 }
 
 export interface ITransaction {

@@ -4,18 +4,18 @@ import {
   Group,
   Stack,
   Badge,
-  ActionIcon,
   SimpleGrid,
   Skeleton,
   NumberFormatter,
   Title,
   Button,
 } from '@mantine/core';
-import { IconBuildingBank, IconArrowRight, IconPlus } from '@tabler/icons-react';
+import { IconBuildingBank, IconPlus } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { useAccountsQuery } from '../../queries/account.queries';
 import { CreateAccountModal } from './CreateAccountModal';
 import { useNavigate } from 'react-router-dom';
+import { ACCOUNT_TYPES_COLORS, ACCOUNT_TYPES_MAP } from '../../constants/account';
 
 export function ListAccounts() {
   const { data, isPending } = useAccountsQuery();
@@ -78,51 +78,20 @@ export function ListAccounts() {
                   },
                 }}
                 onClick={() => {
-                  // Handle card click - navigate to account details
-                  console.log('Navigate to account:', account._id);
+                  navigate(`/accounts/${account._id}`);
                 }}
               >
                 <Stack gap="md">
-                  {/* Header with Bank Icon and Actions */}
-                  <Group justify="space-between" align="flex-start">
-                    <Group gap="sm">
-                      <div
-                        style={{
-                          width: 40,
-                          height: 40,
-                          borderRadius: '8px',
-                          backgroundColor: 'var(--mantine-color-blue-1)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        <IconBuildingBank size={20} color="var(--mantine-color-blue-6)" />
-                      </div>
-                      <Badge variant="light" color="blue" size="sm">
-                        Savings
+                  <Stack gap="xs">
+                    <Group justify="space-between">
+                      <Text size="lg" fw={600} lineClamp={1}>
+                        {account.name}
+                      </Text>
+                      <Badge variant="light" color={ACCOUNT_TYPES_COLORS[account.type]} size="md">
+                        {ACCOUNT_TYPES_MAP[account.type]}
                       </Badge>
                     </Group>
-                    <Group gap="xs">
-                      <ActionIcon
-                        variant="subtle"
-                        color="blue"
-                        size="sm"
-                        onClick={e => {
-                          e.stopPropagation();
-                          navigate(`/accounts/${account._id}`);
-                        }}
-                      >
-                        <IconArrowRight size={16} />
-                      </ActionIcon>
-                    </Group>
-                  </Group>
 
-                  {/* Account Information */}
-                  <Stack gap="xs">
-                    <Text size="lg" fw={600} lineClamp={1}>
-                      {account.name}
-                    </Text>
                     <Text size="sm" c="dimmed" lineClamp={1}>
                       Account Holder: {account.accountHolder.fullName || 'N/A'}
                     </Text>

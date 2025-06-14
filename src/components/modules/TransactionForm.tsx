@@ -170,6 +170,7 @@ export const TransactionForm = () => {
                     placeholder="Select date"
                     leftSection={<IconCalendar size={16} />}
                     radius="md"
+                    maxDate={new Date()}
                     {...form.getInputProps('transactionDate')}
                   />
                 </SimpleGrid>
