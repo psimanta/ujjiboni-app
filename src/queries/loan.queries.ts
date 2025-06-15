@@ -1,11 +1,24 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from './api';
 import { QUERY_KEYS } from '../constants/queries';
 import type { IResponseError, IResponseGeneric } from '../interfaces/response.interface';
-import type { ILoan } from '../interfaces/loan.interface';
+import type { ILoan, LoanType } from '../interfaces/loan.interface';
 
 interface ILoansResponse extends IResponseGeneric {
   loans: ILoan[];
+}
+
+interface ILoanCreationResponse extends IResponseGeneric {
+  loan: ILoan;
+}
+interface ICreateLoanPayload {
+  memberId: string;
+  loanType: LoanType;
+  principalAmount: number;
+  monthlyInterestRate: number;
+  notes: string;
+  interestStartMonth: string;
+  loanDisbursementMonth: string;
 }
 
 export const useLoansQuery = (
@@ -39,6 +52,20 @@ export const useLoansQuery = (
         params,
       });
       return data;
+    },
+  });
+};
+
+export const useCreateLoanMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<ILoanCreationResponse, IResponseError, ICreateLoanPayload>({
+    mutationFn: async payload => {
+      const { data } = await api.post<ILoanCreationResponse>('/loans', payload);
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.LOANS] });
     },
   });
 };
