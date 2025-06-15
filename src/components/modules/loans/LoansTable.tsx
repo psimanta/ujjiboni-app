@@ -15,11 +15,12 @@ import {
   Skeleton,
   SimpleGrid,
 } from '@mantine/core';
-import { IconEye, IconEdit, IconTrash, IconBuildingBank } from '@tabler/icons-react';
+import { IconEye, IconEdit, IconTrash, IconCoin } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useLoansQuery } from '../../../queries/loan.queries';
 import type { ILoan, LoanStatus, LoanType } from '../../../interfaces/loan.interface';
 import { useStore } from '../../../store';
+import { useNavigate } from 'react-router-dom';
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('en-US', {
@@ -69,6 +70,7 @@ const getLoanTypeColor = (type: LoanType) => {
 };
 
 const LoanRow = ({ loan }: { loan: ILoan }) => {
+  const navigate = useNavigate();
   return (
     <Table.Tr>
       <Table.Td>
@@ -138,7 +140,7 @@ const LoanRow = ({ loan }: { loan: ILoan }) => {
               color="blue"
               size="sm"
               onClick={() => {
-                console.log('View loan details:', loan._id);
+                navigate(`/loans/${loan._id}`);
               }}
             >
               <IconEye size={16} />
@@ -332,11 +334,7 @@ export function LoansTable() {
                     <Table.Td colSpan={8}>
                       <Center py="xl">
                         <Stack align="center" gap="md">
-                          <IconBuildingBank
-                            size={48}
-                            stroke={1.5}
-                            color="var(--mantine-color-gray-5)"
-                          />
+                          <IconCoin size={48} stroke={1.5} color="var(--mantine-color-gray-5)" />
                           <Text size="lg" fw={500} c="dimmed">
                             No loans found
                           </Text>

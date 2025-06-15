@@ -8,6 +8,10 @@ interface ILoansResponse extends IResponseGeneric {
   loans: ILoan[];
 }
 
+interface ILoanResponse extends IResponseGeneric {
+  loan: ILoan;
+}
+
 interface ILoanCreationResponse extends IResponseGeneric {
   loan: ILoan;
 }
@@ -51,6 +55,16 @@ export const useLoansQuery = (
       const { data } = await api.get<ILoansResponse>('/loans', {
         params,
       });
+      return data;
+    },
+  });
+};
+
+export const useLoanQuery = (id: string) => {
+  return useQuery<ILoanResponse, IResponseError>({
+    queryKey: [QUERY_KEYS.LOAN, id],
+    queryFn: async () => {
+      const { data } = await api.get<ILoanResponse>(`/loans/${id}`);
       return data;
     },
   });

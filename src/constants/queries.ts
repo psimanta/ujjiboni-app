@@ -5,4 +5,5 @@ export const QUERY_KEYS = {
   ACCOUNT_DETAILS: 'account-details',
   ACCOUNT_TRANSACTIONS: 'account-transactions',
   LOANS: 'loans',
+  LOAN: 'loan',
 };
