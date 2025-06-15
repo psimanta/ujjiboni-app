@@ -105,7 +105,13 @@ const LoanRow = ({ loan }: { loan: ILoan }) => {
 
       <Table.Td>
         <Text size="sm" fw={600} c="blue">
-          <NumberFormatter value={loan.principalAmount} prefix="৳ " thousandSeparator="," />
+          <NumberFormatter
+            value={loan.principalAmount}
+            prefix="৳ "
+            thousandSeparator=","
+            thousandsGroupStyle="lakh"
+            style={{ whiteSpace: 'nowrap' }}
+          />
         </Text>
       </Table.Td>
 

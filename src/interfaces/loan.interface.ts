@@ -78,6 +78,7 @@ export interface ILoansResponse extends IResponseGeneric {
 
 export interface ILoanResponse extends IResponseGeneric {
   loan: ILoan;
+  outstandingBalance: number;
 }
 
 export interface ILoanCreationResponse extends IResponseGeneric {

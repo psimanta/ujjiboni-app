@@ -1,4 +1,4 @@
-import { Group, NumberInput, Button, Text, Stack, Alert, SimpleGrid } from '@mantine/core';
+import { Group, NumberInput, Button, Text, Stack, Alert, SimpleGrid, Paper } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { IconReceipt, IconX } from '@tabler/icons-react';
@@ -63,55 +63,58 @@ export function EMIForm() {
   };
 
   return (
-    <form onSubmit={form.onSubmit(handleSubmit)}>
-      <Stack gap="md">
-        <Group grow align="flex-end">
-          <NumberInput
-            label="EMI Amount"
-            placeholder="Enter payment amount"
-            leftSection={<Text size="sm">৳</Text>}
-            radius="md"
-            min={0}
-            max={10000000}
-            thousandSeparator=","
-            thousandsGroupStyle="lakh"
-            size="sm"
-            {...form.getInputProps('amount')}
-          />
+    <Paper radius="md" p="md">
+      <form onSubmit={form.onSubmit(handleSubmit)}>
+        <Stack gap="md">
+          <Group grow align="flex-end">
+            <NumberInput
+              label="EMI Amount"
+              placeholder="Enter payment amount"
+              leftSection={<Text size="sm">৳</Text>}
+              radius="md"
+              min={0}
+              max={10000000}
+              thousandSeparator=","
+              thousandsGroupStyle="lakh"
+              size="sm"
+              {...form.getInputProps('amount')}
+            />
 
-          <DateInput
-            label="Payment Date"
-            placeholder="Select payment date"
-            radius="md"
-            size="sm"
-            {...form.getInputProps('paymentDate')}
-          />
-
-          <SimpleGrid cols={2}>
-            <Button
-              type="submit"
-              loading={isPending}
-              leftSection={<IconReceipt size={16} />}
+            <DateInput
+              label="Payment Date"
+              placeholder="Select payment date"
               radius="md"
               size="sm"
-            >
-              Add EMI
-            </Button>
-            <Button
-              type="button"
-              variant="light"
-              color="gray"
-              onClick={() => form.reset()}
-              leftSection={<IconX size={16} />}
-              radius="md"
-              size="sm"
-            >
-              Clear
-            </Button>
-          </SimpleGrid>
-        </Group>
-        {error && <Alert color="red" title={error} radius="md" />}
-      </Stack>
-    </form>
+              maxDate={new Date()}
+              {...form.getInputProps('paymentDate')}
+            />
+
+            <SimpleGrid cols={2}>
+              <Button
+                type="submit"
+                loading={isPending}
+                leftSection={<IconReceipt size={16} />}
+                radius="md"
+                size="sm"
+              >
+                Add EMI
+              </Button>
+              <Button
+                type="button"
+                variant="light"
+                color="gray"
+                onClick={() => form.reset()}
+                leftSection={<IconX size={16} />}
+                radius="md"
+                size="sm"
+              >
+                Clear
+              </Button>
+            </SimpleGrid>
+          </Group>
+          {error && <Alert color="red" title={error} radius="md" />}
+        </Stack>
+      </form>
+    </Paper>
   );
 }

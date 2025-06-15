@@ -62,7 +62,6 @@ export function LoanDetailsPage() {
 
   const loan = loanData?.loan;
   const emis = emisData?.payments || [];
-  console.log(emisData);
   const interests = interestsData?.interests || [];
 
   useEffect(() => {
@@ -194,7 +193,7 @@ export function LoanDetailsPage() {
             </Card>
           </SimpleGrid>
 
-          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+          <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md">
             <Card withBorder radius="md" p="md">
               <Stack gap="xs">
                 <Text size="sm" c="dimmed">
@@ -210,6 +209,22 @@ export function LoanDetailsPage() {
                   Interest Start Month
                 </Text>
                 <Text fw={500}>{formatMonth(loan.interestStartMonth)}</Text>
+              </Stack>
+            </Card>
+
+            <Card withBorder radius="md" p="md">
+              <Stack gap="xs">
+                <Text size="sm" c="dimmed">
+                  Outstanding Balance
+                </Text>
+                <Text fw={500} c="red">
+                  <NumberFormatter
+                    value={loanData?.outstandingBalance}
+                    prefix="৳ "
+                    thousandSeparator=","
+                    thousandsGroupStyle="lakh"
+                  />
+                </Text>
               </Stack>
             </Card>
           </SimpleGrid>
