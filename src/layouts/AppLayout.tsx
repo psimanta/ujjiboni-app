@@ -52,7 +52,7 @@ export function AppLayout() {
       navbar={
         isAuthenticated
           ? {
-              width: 280,
+              width: 230,
               breakpoint: 'sm',
               collapsed: { mobile: !opened },
             }

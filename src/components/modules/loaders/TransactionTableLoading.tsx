@@ -2,7 +2,7 @@ import { Group, Skeleton, Stack, Table } from '@mantine/core';
 
 export const TransactionTableLoading = () => (
   <>
-    {Array.from({ length: 10 }).map((_, index) => (
+    {Array.from({ length: 6 }).map((_, index) => (
       <Table.Tr key={index}>
         <Table.Td>
           <Group gap="sm">

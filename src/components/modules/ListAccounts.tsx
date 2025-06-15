@@ -98,13 +98,18 @@ export function ListAccounts() {
                   </Stack>
 
                   {/* Balance */}
-                  <Group justify="space-between" align="center" mt="auto">
+                  <Group justify="space-between" align="flex-end" mt="auto">
                     <Stack gap={2}>
                       <Text size="xs" c="dimmed" tt="uppercase" fw={500}>
                         Balance
                       </Text>
                       <Text size="xl" fw={700} c="green">
-                        <NumberFormatter value={balance} prefix="৳ " thousandSeparator="," />
+                        <NumberFormatter
+                          value={balance}
+                          prefix="৳ "
+                          thousandSeparator=","
+                          thousandsGroupStyle="lakh"
+                        />
                       </Text>
                     </Stack>
                     {account.isLocked ? (

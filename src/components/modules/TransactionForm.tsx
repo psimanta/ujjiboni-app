@@ -153,6 +153,7 @@ export const TransactionForm = () => {
                     decimalScale={2}
                     fixedDecimalScale
                     thousandSeparator=","
+                    thousandsGroupStyle="lakh"
                     radius="md"
                     {...form.getInputProps('amount')}
                   />

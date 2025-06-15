@@ -85,7 +85,12 @@ const TransactionRow = ({ transaction }: { transaction: ITransaction }) => {
       <Table.Td>
         <Text size="sm" fw={600} c={isCredit ? 'green' : 'red'}>
           {isCredit ? '+' : '-'}
-          <NumberFormatter value={transaction.amount} prefix="৳ " thousandSeparator="," />
+          <NumberFormatter
+            value={transaction.amount}
+            prefix="৳ "
+            thousandSeparator=","
+            thousandsGroupStyle="lakh"
+          />
         </Text>
       </Table.Td>
 
@@ -192,6 +197,8 @@ export function TransactionsTable({
                 <Text size="xl" fw={700} c="blue">
                   <NumberFormatter
                     value={accountDetails.account.balance}
+                    allowNegative={false}
+                    thousandsGroupStyle="lakh"
                     prefix="৳ "
                     thousandSeparator=","
                   />
