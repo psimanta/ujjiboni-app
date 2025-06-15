@@ -12,10 +12,10 @@ import {
 } from '@mantine/core';
 import { IconBuildingBank, IconPlus } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
-import { useAccountsQuery } from '../../queries/account.queries';
+import { useAccountsQuery } from '../../../queries/account.queries';
 import { CreateAccountModal } from './CreateAccountModal';
 import { useNavigate } from 'react-router-dom';
-import { ACCOUNT_TYPES_COLORS, ACCOUNT_TYPES_MAP } from '../../constants/account';
+import { ACCOUNT_TYPES_COLORS, ACCOUNT_TYPES_MAP } from '../../../constants/account';
 
 export function ListAccounts() {
   const { data, isPending } = useAccountsQuery();

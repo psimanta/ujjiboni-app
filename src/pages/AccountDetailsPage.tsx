@@ -1,6 +1,6 @@
 import { CustomBreadCrumbs } from '../components/CustomBreadCrumb';
 import { useState } from 'react';
-import { TransactionsTable } from '../components/modules/TransactionsTable';
+import { TransactionsTable } from '../components/modules/accounts/TransactionsTable';
 import { Stack } from '@mantine/core';
 
 export function AccountDetailsPage() {

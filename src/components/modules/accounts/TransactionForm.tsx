@@ -25,8 +25,8 @@ import {
 } from '@tabler/icons-react';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
-import { useEnterTransactionMutation } from '../../queries/account.queries';
-import { TRANSACTION_TYPE } from '../../constants/account';
+import { useEnterTransactionMutation } from '../../../queries/account.queries';
+import { TRANSACTION_TYPE } from '../../../constants/account';
 
 interface TransactionFormData {
   amount: number | '';

@@ -18,9 +18,12 @@ import {
 import { IconArrowUp, IconArrowDown, IconReceipt, IconTrash, IconEdit } from '@tabler/icons-react';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { useAccountDetailsQuery, useAccountTransactionsQuery } from '../../queries/account.queries';
-import type { ITransaction } from '../../interfaces/account.interface';
-import { TRANSACTION_TYPE } from '../../constants/account';
+import {
+  useAccountDetailsQuery,
+  useAccountTransactionsQuery,
+} from '../../../queries/account.queries';
+import type { ITransaction } from '../../../interfaces/account.interface';
+import { TRANSACTION_TYPE } from '../../../constants/account';
 import { TransactionTableLoading } from './loaders/TransactionTableLoading';
 import { TransactionForm } from './TransactionForm';
 
