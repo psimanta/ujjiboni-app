@@ -133,7 +133,7 @@ const LoanRow = ({ loan }: { loan: ILoan }) => {
       </Table.Td>
 
       <Table.Td>
-        <Group gap="xs" justify="center">
+        <Group gap="xs" justify="center" wrap="nowrap">
           <Tooltip label="View Details">
             <ActionIcon
               variant="subtle"

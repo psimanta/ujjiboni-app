@@ -2,31 +2,19 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from './api';
 import { QUERY_KEYS } from '../constants/queries';
 import type { IResponseError, IResponseGeneric } from '../interfaces/response.interface';
-import type { ILoan, LoanType, ILoanEMI, ILoanInterest } from '../interfaces/loan.interface';
-
-interface ILoansResponse extends IResponseGeneric {
-  loans: ILoan[];
-}
-
-interface ILoanResponse extends IResponseGeneric {
-  loan: ILoan;
-}
-
-interface ILoanCreationResponse extends IResponseGeneric {
-  loan: ILoan;
-}
-interface ICreateLoanPayload {
-  memberId: string;
-  loanType: LoanType;
-  principalAmount: number;
-  monthlyInterestRate: number;
-  notes: string;
-  interestStartMonth: string;
-  loanDisbursementMonth: string;
-}
+import type {
+  ILoanEMI,
+  ILoanInterest,
+  ILoanCreationResponse,
+  ILoansResponse,
+  ILoanResponse,
+  ICreateLoanPayload,
+  ICreateLoanEMIPayload,
+  ILoanEMICreationResponse,
+} from '../interfaces/loan.interface';
 
 interface ILoanEMIsResponse extends IResponseGeneric {
-  emis: ILoanEMI[];
+  payments: ILoanEMI[];
 }
 
 interface ILoanInterestsResponse extends IResponseGeneric {
@@ -78,17 +66,6 @@ export const useLoanQuery = (id: string) => {
   });
 };
 
-export const useLoanEMIsQuery = (loanId: string) => {
-  return useQuery<ILoanEMIsResponse, IResponseError>({
-    queryKey: [QUERY_KEYS.LOAN, loanId, 'emis'],
-    queryFn: async () => {
-      const { data } = await api.get<ILoanEMIsResponse>(`/loans/${loanId}/emis`);
-      return data;
-    },
-    enabled: !!loanId,
-  });
-};
-
 export const useLoanInterestsQuery = (loanId: string) => {
   return useQuery<ILoanInterestsResponse, IResponseError>({
     queryKey: [QUERY_KEYS.LOAN, loanId, 'interests'],
@@ -110,6 +87,38 @@ export const useCreateLoanMutation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.LOANS] });
+    },
+  });
+};
+
+export const useLoanEMIsQuery = (loanId: string) => {
+  return useQuery<ILoanEMIsResponse, IResponseError>({
+    queryKey: [QUERY_KEYS.LOAN_EMIS, loanId],
+    queryFn: async () => {
+      const { data } = await api.get<ILoanEMIsResponse>(`/loans/${loanId}/payments`);
+      return data;
+    },
+    enabled: !!loanId,
+  });
+};
+
+export const useCreateLoanEMIMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    ILoanEMICreationResponse,
+    IResponseError,
+    { loanId: string; payload: ICreateLoanEMIPayload }
+  >({
+    mutationFn: async ({ loanId, payload }) => {
+      const { data } = await api.post<ILoanEMICreationResponse>(
+        `/loans/${loanId}/payments`,
+        payload
+      );
+      return data;
+    },
+    onSuccess: (_, { loanId }) => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.LOAN_EMIS, loanId] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.LOAN, loanId] });
     },
   });
 };

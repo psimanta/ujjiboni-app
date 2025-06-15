@@ -1,6 +1,5 @@
 import {
   Table,
-  Badge,
   Text,
   Group,
   ActionIcon,
@@ -12,8 +11,9 @@ import {
   Center,
   Skeleton,
 } from '@mantine/core';
-import { IconCoin, IconEye, IconEdit } from '@tabler/icons-react';
+import { IconCoin, IconEdit, IconTrash } from '@tabler/icons-react';
 import type { ILoanEMI } from '../../../interfaces/loan.interface';
+import { EMIForm } from './EMIForm';
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('en-US', {
@@ -23,31 +23,17 @@ const formatDate = (dateString: string) => {
   });
 };
 
-const getStatusColor = (status: 'PENDING' | 'PAID' | 'OVERDUE') => {
-  switch (status) {
-    case 'PAID':
-      return 'green';
-    case 'PENDING':
-      return 'yellow';
-    case 'OVERDUE':
-      return 'red';
-    default:
-      return 'gray';
-  }
-};
-
 const EMIRow = ({ emi }: { emi: ILoanEMI }) => (
   <Table.Tr>
     <Table.Td>
-      <NumberFormatter value={emi.amount} prefix="৳ " thousandSeparator="," />
+      <NumberFormatter
+        value={emi.amount}
+        prefix="৳ "
+        thousandSeparator=","
+        thousandsGroupStyle="lakh"
+      />
     </Table.Td>
-    <Table.Td>{formatDate(emi.dueDate)}</Table.Td>
-    <Table.Td>{emi.paidDate ? formatDate(emi.paidDate) : '-'}</Table.Td>
-    <Table.Td>
-      <Badge variant="light" color={getStatusColor(emi.status)} size="sm">
-        {emi.status}
-      </Badge>
-    </Table.Td>
+    <Table.Td>{formatDate(emi.paymentDate)}</Table.Td>
     <Table.Td>
       {emi.enteredBy ? (
         <Stack gap={2}>
@@ -64,14 +50,14 @@ const EMIRow = ({ emi }: { emi: ILoanEMI }) => (
     </Table.Td>
     <Table.Td>
       <Group gap="xs" justify="center">
-        <Tooltip label="View Details">
-          <ActionIcon variant="subtle" color="blue" size="sm">
-            <IconEye size={16} />
-          </ActionIcon>
-        </Tooltip>
         <Tooltip label="Edit EMI">
           <ActionIcon variant="subtle" color="gray" size="sm" disabled>
             <IconEdit size={16} />
+          </ActionIcon>
+        </Tooltip>
+        <Tooltip label="Delete EMI">
+          <ActionIcon variant="subtle" color="red" size="sm" disabled>
+            <IconTrash size={16} />
           </ActionIcon>
         </Tooltip>
       </Group>
@@ -85,12 +71,6 @@ const LoadingSkeleton = ({ rows = 3 }: { rows?: number }) => (
       <Table.Tr key={index}>
         <Table.Td>
           <Skeleton height={16} width={100} />
-        </Table.Td>
-        <Table.Td>
-          <Skeleton height={16} width={120} />
-        </Table.Td>
-        <Table.Td>
-          <Skeleton height={16} width={120} />
         </Table.Td>
         <Table.Td>
           <Skeleton height={20} width={70} />
@@ -120,14 +100,13 @@ interface LoanEMIsTableProps {
 export function LoanEMIsTable({ emis, isLoading }: LoanEMIsTableProps) {
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
-      <ScrollArea>
+      <EMIForm />
+      <ScrollArea mt="md">
         <Table striped highlightOnHover withTableBorder withColumnBorders>
           <Table.Thead>
             <Table.Tr>
               <Table.Th>Amount</Table.Th>
-              <Table.Th>Due Date</Table.Th>
-              <Table.Th>Paid Date</Table.Th>
-              <Table.Th>Status</Table.Th>
+              <Table.Th>Payment Date</Table.Th>
               <Table.Th>Entered By</Table.Th>
               <Table.Th>Actions</Table.Th>
             </Table.Tr>

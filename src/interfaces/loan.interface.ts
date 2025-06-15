@@ -1,3 +1,5 @@
+import type { IResponseGeneric } from './response.interface';
+
 export enum LoanStatus {
   ACTIVE = 'ACTIVE',
   COMPLETED = 'COMPLETED',
@@ -36,16 +38,20 @@ export interface ILoan {
 
 export interface ILoanEMI {
   _id: string;
-  loanId: string;
+  loan: {
+    _id: string;
+    loanNumber: string;
+    principalAmount: number;
+    id: string;
+  };
+  paymentDate: string;
   amount: number;
-  dueDate: string;
-  paidDate?: string;
-  status: 'PENDING' | 'PAID' | 'OVERDUE';
-  enteredBy?: {
+  enteredBy: {
     _id: string;
     email: string;
     fullName: string;
   };
+  notes: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -64,4 +70,35 @@ export interface ILoanInterest {
   };
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ILoansResponse extends IResponseGeneric {
+  loans: ILoan[];
+}
+
+export interface ILoanResponse extends IResponseGeneric {
+  loan: ILoan;
+}
+
+export interface ILoanCreationResponse extends IResponseGeneric {
+  loan: ILoan;
+}
+export interface ICreateLoanPayload {
+  memberId: string;
+  loanType: LoanType;
+  principalAmount: number;
+  monthlyInterestRate: number;
+  notes: string;
+  interestStartMonth: string;
+  loanDisbursementMonth: string;
+}
+
+export interface ICreateLoanEMIPayload {
+  amount: number;
+  notes: string;
+  paymentDate: Date;
+}
+
+export interface ILoanEMICreationResponse extends IResponseGeneric {
+  payment: ILoanEMI;
 }

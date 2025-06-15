@@ -61,7 +61,8 @@ export function LoanDetailsPage() {
   const { data: interestsData, isPending: isInterestsPending } = useLoanInterestsQuery(id || '');
 
   const loan = loanData?.loan;
-  const emis = emisData?.emis || [];
+  const emis = emisData?.payments || [];
+  console.log(emisData);
   const interests = interestsData?.interests || [];
 
   useEffect(() => {
