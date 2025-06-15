@@ -33,3 +33,35 @@ export interface ILoan {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface ILoanEMI {
+  _id: string;
+  loanId: string;
+  amount: number;
+  dueDate: string;
+  paidDate?: string;
+  status: 'PENDING' | 'PAID' | 'OVERDUE';
+  enteredBy?: {
+    _id: string;
+    email: string;
+    fullName: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ILoanInterest {
+  _id: string;
+  loanId: string;
+  amount: number;
+  month: string;
+  paidDate?: string;
+  status: 'PENDING' | 'PAID' | 'OVERDUE';
+  enteredBy?: {
+    _id: string;
+    email: string;
+    fullName: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}

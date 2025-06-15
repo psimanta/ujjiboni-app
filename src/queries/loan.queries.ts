@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from './api';
 import { QUERY_KEYS } from '../constants/queries';
 import type { IResponseError, IResponseGeneric } from '../interfaces/response.interface';
-import type { ILoan, LoanType } from '../interfaces/loan.interface';
+import type { ILoan, LoanType, ILoanEMI, ILoanInterest } from '../interfaces/loan.interface';
 
 interface ILoansResponse extends IResponseGeneric {
   loans: ILoan[];
@@ -23,6 +23,14 @@ interface ICreateLoanPayload {
   notes: string;
   interestStartMonth: string;
   loanDisbursementMonth: string;
+}
+
+interface ILoanEMIsResponse extends IResponseGeneric {
+  emis: ILoanEMI[];
+}
+
+interface ILoanInterestsResponse extends IResponseGeneric {
+  interests: ILoanInterest[];
 }
 
 export const useLoansQuery = (
@@ -67,6 +75,28 @@ export const useLoanQuery = (id: string) => {
       const { data } = await api.get<ILoanResponse>(`/loans/${id}`);
       return data;
     },
+  });
+};
+
+export const useLoanEMIsQuery = (loanId: string) => {
+  return useQuery<ILoanEMIsResponse, IResponseError>({
+    queryKey: [QUERY_KEYS.LOAN, loanId, 'emis'],
+    queryFn: async () => {
+      const { data } = await api.get<ILoanEMIsResponse>(`/loans/${loanId}/emis`);
+      return data;
+    },
+    enabled: !!loanId,
+  });
+};
+
+export const useLoanInterestsQuery = (loanId: string) => {
+  return useQuery<ILoanInterestsResponse, IResponseError>({
+    queryKey: [QUERY_KEYS.LOAN, loanId, 'interests'],
+    queryFn: async () => {
+      const { data } = await api.get<ILoanInterestsResponse>(`/loans/${loanId}/interests`);
+      return data;
+    },
+    enabled: !!loanId,
   });
 };
 
