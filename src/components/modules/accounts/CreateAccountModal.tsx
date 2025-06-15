@@ -1,10 +1,11 @@
 import { Modal, TextInput, Button, Stack, Group, Text, Select, Alert } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconBuildingBank, IconUser, IconSignature } from '@tabler/icons-react';
-import { useMembersQuery } from '../../../queries/user.queries';
+
 import { useCreateAccountMutation } from '../../../queries/account.queries';
 import { useState } from 'react';
 import { ACCOUNT_TYPES } from '../../../constants/account';
+import { useStore } from '../../../store';
 
 interface CreateAccountModalProps {
   opened: boolean;
@@ -19,9 +20,9 @@ interface CreateAccountFormData {
 
 export function CreateAccountModal({ opened, onClose }: CreateAccountModalProps) {
   const { mutate, isPending } = useCreateAccountMutation();
-  const { data } = useMembersQuery();
+  const { members } = useStore();
   const [error, setError] = useState<string | null>(null);
-  const membersData = data?.users?.map(member => ({
+  const membersData = members?.map(member => ({
     value: member._id,
     label: member.fullName,
   }));

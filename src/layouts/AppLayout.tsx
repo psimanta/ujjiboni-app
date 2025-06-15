@@ -24,6 +24,7 @@ import {
 import { useStore } from '../store';
 import { useEffect } from 'react';
 import { FullPageLoader } from '../components/FullPageLoader';
+import { useMembersQuery } from '../queries/user.queries';
 
 const navigationItems = [
   { label: 'Dashboard', icon: IconLayoutDashboard, path: '/' },
@@ -35,6 +36,7 @@ const navigationItems = [
 
 export function AppLayout() {
   const { isError, isPending } = useProfileQuery();
+  useMembersQuery();
   const { logout, isAuthenticated } = useStore(state => state);
   const location = useLocation();
   const navigate = useNavigate();

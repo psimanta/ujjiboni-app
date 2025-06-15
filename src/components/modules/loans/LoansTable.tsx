@@ -13,11 +13,13 @@ import {
   Pagination,
   Select,
   Skeleton,
+  SimpleGrid,
 } from '@mantine/core';
 import { IconEye, IconEdit, IconTrash, IconBuildingBank } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useLoansQuery } from '../../../queries/loan.queries';
 import type { ILoan, LoanStatus, LoanType } from '../../../interfaces/loan.interface';
+import { useStore } from '../../../store';
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('en-US', {
@@ -32,6 +34,12 @@ const LIMIT_OPTIONS = [
   { value: '10', label: '10 per page' },
   { value: '20', label: '20 per page' },
   { value: '50', label: '50 per page' },
+];
+
+const STATUS_OPTIONS = [
+  { value: 'all', label: 'All Status' },
+  { value: 'ACTIVE', label: 'Active' },
+  { value: 'COMPLETED', label: 'Completed' },
 ];
 
 const getStatusColor = (status: LoanStatus) => {
@@ -220,7 +228,19 @@ const LoadingSkeleton = () => (
 export function LoansTable() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState('10');
-  const { data, isPending } = useLoansQuery(page, parseInt(limit));
+  const [selectedMember, setSelectedMember] = useState<string>('all');
+  const [selectedStatus, setSelectedStatus] = useState<string>('ACTIVE');
+
+  const { data, isPending } = useLoansQuery(page, parseInt(limit), selectedMember, selectedStatus);
+  const { members } = useStore();
+
+  const membersData = [
+    { value: 'all', label: 'All Members' },
+    ...(members?.map(member => ({
+      value: member._id,
+      label: member.fullName,
+    })) || []),
+  ];
 
   const loans = data?.loans || [];
   const totalPages = data?.pagination?.pages || 1;
@@ -237,11 +257,44 @@ export function LoansTable() {
     }
   };
 
+  const handleMemberChange = (memberId: string | null) => {
+    setSelectedMember(memberId || 'all');
+    setPage(1); // Reset to first page when changing filter
+  };
+
+  const handleStatusChange = (status: string | null) => {
+    setSelectedStatus(status || 'ACTIVE');
+    setPage(1); // Reset to first page when changing filter
+  };
+
   return (
     <Stack gap="lg">
       <Card shadow="sm" padding="lg" radius="md" withBorder>
         <Stack gap="md">
-          <Group justify="space-between" align="center">
+          <Group justify="space-between" align="flex-end">
+            {/* Filters */}
+            <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="md">
+              <Select
+                label="Filter by Member"
+                placeholder="Select member"
+                value={selectedMember}
+                onChange={handleMemberChange}
+                data={membersData}
+                searchable
+                clearable={false}
+                size="sm"
+              />
+              <Select
+                label="Filter by Status"
+                placeholder="Select status"
+                value={selectedStatus}
+                onChange={handleStatusChange}
+                data={STATUS_OPTIONS}
+                clearable={false}
+                size="sm"
+              />
+              <div /> {/* Empty div for grid alignment */}
+            </SimpleGrid>
             <Group gap="md">
               <Select
                 value={limit}
