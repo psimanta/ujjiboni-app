@@ -6,35 +6,18 @@ import {
   Badge,
   NumberFormatter,
   Title,
-  Table,
-  ScrollArea,
   Center,
   Skeleton,
   SimpleGrid,
-  ActionIcon,
-  Tooltip,
 } from '@mantine/core';
-import {
-  IconCoin,
-  IconCalendar,
-  IconUser,
-  IconFileText,
-  IconEye,
-  IconEdit,
-} from '@tabler/icons-react';
+import { IconCoin, IconCalendar, IconUser, IconFileText } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { CustomBreadCrumbs } from '../components/CustomBreadCrumb';
 import { useParams } from 'react-router-dom';
 import { useLoanQuery, useLoanEMIsQuery, useLoanInterestsQuery } from '../queries/loan.queries';
-import type { LoanStatus, LoanType, ILoanEMI, ILoanInterest } from '../interfaces/loan.interface';
-
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-};
+import { LoanEMIsTable } from '../components/modules/loans/LoanEMIsTable';
+import { LoanInterestsTable } from '../components/modules/loans/LoanInterestsTable';
+import type { LoanStatus, LoanType } from '../interfaces/loan.interface';
 
 const formatMonth = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('en-US', {
@@ -43,18 +26,12 @@ const formatMonth = (dateString: string) => {
   });
 };
 
-const getStatusColor = (status: LoanStatus | 'PENDING' | 'PAID' | 'OVERDUE') => {
+const getStatusColor = (status: LoanStatus) => {
   switch (status) {
     case 'ACTIVE':
       return 'green';
     case 'COMPLETED':
       return 'blue';
-    case 'PAID':
-      return 'green';
-    case 'PENDING':
-      return 'yellow';
-    case 'OVERDUE':
-      return 'red';
     default:
       return 'gray';
   }
@@ -74,125 +51,6 @@ const getLoanTypeColor = (type: LoanType) => {
       return 'gray';
   }
 };
-
-const EMIRow = ({ emi }: { emi: ILoanEMI }) => (
-  <Table.Tr>
-    <Table.Td>
-      <NumberFormatter value={emi.amount} prefix="৳ " thousandSeparator="," />
-    </Table.Td>
-    <Table.Td>{formatDate(emi.dueDate)}</Table.Td>
-    <Table.Td>{emi.paidDate ? formatDate(emi.paidDate) : '-'}</Table.Td>
-    <Table.Td>
-      <Badge variant="light" color={getStatusColor(emi.status)} size="sm">
-        {emi.status}
-      </Badge>
-    </Table.Td>
-    <Table.Td>
-      {emi.enteredBy ? (
-        <Stack gap={2}>
-          <Text size="sm" fw={500}>
-            {emi.enteredBy.fullName}
-          </Text>
-          <Text size="xs" c="dimmed">
-            {emi.enteredBy.email}
-          </Text>
-        </Stack>
-      ) : (
-        '-'
-      )}
-    </Table.Td>
-    <Table.Td>
-      <Group gap="xs" justify="center">
-        <Tooltip label="View Details">
-          <ActionIcon variant="subtle" color="blue" size="sm">
-            <IconEye size={16} />
-          </ActionIcon>
-        </Tooltip>
-        <Tooltip label="Edit EMI">
-          <ActionIcon variant="subtle" color="gray" size="sm" disabled>
-            <IconEdit size={16} />
-          </ActionIcon>
-        </Tooltip>
-      </Group>
-    </Table.Td>
-  </Table.Tr>
-);
-
-const InterestRow = ({ interest }: { interest: ILoanInterest }) => (
-  <Table.Tr>
-    <Table.Td>
-      <NumberFormatter value={interest.amount} prefix="৳ " thousandSeparator="," />
-    </Table.Td>
-    <Table.Td>{formatMonth(interest.month)}</Table.Td>
-    <Table.Td>{interest.paidDate ? formatDate(interest.paidDate) : '-'}</Table.Td>
-    <Table.Td>
-      <Badge variant="light" color={getStatusColor(interest.status)} size="sm">
-        {interest.status}
-      </Badge>
-    </Table.Td>
-    <Table.Td>
-      {interest.enteredBy ? (
-        <Stack gap={2}>
-          <Text size="sm" fw={500}>
-            {interest.enteredBy.fullName}
-          </Text>
-          <Text size="xs" c="dimmed">
-            {interest.enteredBy.email}
-          </Text>
-        </Stack>
-      ) : (
-        '-'
-      )}
-    </Table.Td>
-    <Table.Td>
-      <Group gap="xs" justify="center">
-        <Tooltip label="View Details">
-          <ActionIcon variant="subtle" color="blue" size="sm">
-            <IconEye size={16} />
-          </ActionIcon>
-        </Tooltip>
-        <Tooltip label="Edit Interest">
-          <ActionIcon variant="subtle" color="gray" size="sm" disabled>
-            <IconEdit size={16} />
-          </ActionIcon>
-        </Tooltip>
-      </Group>
-    </Table.Td>
-  </Table.Tr>
-);
-
-const LoadingSkeleton = ({ rows = 3 }: { rows?: number }) => (
-  <>
-    {Array.from({ length: rows }).map((_, index) => (
-      <Table.Tr key={index}>
-        <Table.Td>
-          <Skeleton height={16} width={100} />
-        </Table.Td>
-        <Table.Td>
-          <Skeleton height={16} width={120} />
-        </Table.Td>
-        <Table.Td>
-          <Skeleton height={16} width={120} />
-        </Table.Td>
-        <Table.Td>
-          <Skeleton height={20} width={70} />
-        </Table.Td>
-        <Table.Td>
-          <Stack gap={2}>
-            <Skeleton height={16} width={120} />
-            <Skeleton height={12} width={150} />
-          </Stack>
-        </Table.Td>
-        <Table.Td>
-          <Group gap="xs" justify="center">
-            <Skeleton height={24} width={24} />
-            <Skeleton height={24} width={24} />
-          </Group>
-        </Table.Td>
-      </Table.Tr>
-    ))}
-  </>
-);
 
 export function LoanDetailsPage() {
   const [breadCrumbItems, setBreadCrumbItems] = useState<{ label: string; href: string }[]>([]);
@@ -368,100 +226,10 @@ export function LoanDetailsPage() {
       </Card>
 
       {/* EMIs Section */}
-      <Card shadow="sm" padding="lg" radius="md" withBorder>
-        <Stack gap="md">
-          <Title order={3} size="h4" fw={600}>
-            EMIs
-          </Title>
-          <ScrollArea>
-            <Table striped highlightOnHover withTableBorder withColumnBorders>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>Amount</Table.Th>
-                  <Table.Th>Due Date</Table.Th>
-                  <Table.Th>Paid Date</Table.Th>
-                  <Table.Th>Status</Table.Th>
-                  <Table.Th>Entered By</Table.Th>
-                  <Table.Th>Actions</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {isEMIsPending ? (
-                  <LoadingSkeleton />
-                ) : emis.length === 0 ? (
-                  <Table.Tr>
-                    <Table.Td colSpan={6}>
-                      <Center py="xl">
-                        <Stack align="center" gap="md">
-                          <IconCoin size={48} stroke={1.5} color="var(--mantine-color-gray-5)" />
-                          <Text size="lg" fw={500} c="dimmed">
-                            No EMIs found
-                          </Text>
-                          <Text size="sm" c="dimmed" ta="center">
-                            No EMI records have been created for this loan yet.
-                          </Text>
-                        </Stack>
-                      </Center>
-                    </Table.Td>
-                  </Table.Tr>
-                ) : (
-                  emis.map(emi => <EMIRow key={emi._id} emi={emi} />)
-                )}
-              </Table.Tbody>
-            </Table>
-          </ScrollArea>
-        </Stack>
-      </Card>
+      <LoanEMIsTable emis={emis} isLoading={isEMIsPending} />
 
       {/* Interests Section */}
-      <Card shadow="sm" padding="lg" radius="md" withBorder>
-        <Stack gap="md">
-          <Title order={3} size="h4" fw={600}>
-            Interests
-          </Title>
-          <ScrollArea>
-            <Table striped highlightOnHover withTableBorder withColumnBorders>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>Amount</Table.Th>
-                  <Table.Th>Month</Table.Th>
-                  <Table.Th>Paid Date</Table.Th>
-                  <Table.Th>Status</Table.Th>
-                  <Table.Th>Entered By</Table.Th>
-                  <Table.Th>Actions</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {isInterestsPending ? (
-                  <LoadingSkeleton />
-                ) : interests.length === 0 ? (
-                  <Table.Tr>
-                    <Table.Td colSpan={6}>
-                      <Center py="xl">
-                        <Stack align="center" gap="md">
-                          <IconFileText
-                            size={48}
-                            stroke={1.5}
-                            color="var(--mantine-color-gray-5)"
-                          />
-                          <Text size="lg" fw={500} c="dimmed">
-                            No interests found
-                          </Text>
-                          <Text size="sm" c="dimmed" ta="center">
-                            No interest records have been created for this loan yet.
-                          </Text>
-                        </Stack>
-                      </Center>
-                    </Table.Td>
-                  </Table.Tr>
-                ) : (
-                  interests.map(interest => <InterestRow key={interest._id} interest={interest} />)
-                )}
-              </Table.Tbody>
-            </Table>
-          </ScrollArea>
-        </Stack>
-      </Card>
+      <LoanInterestsTable interests={interests} isLoading={isInterestsPending} />
     </Stack>
   );
 }
