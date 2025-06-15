@@ -9,8 +9,9 @@ import {
   Center,
   Skeleton,
   SimpleGrid,
+  Tabs,
 } from '@mantine/core';
-import { IconCoin, IconCalendar, IconUser, IconFileText } from '@tabler/icons-react';
+import { IconCoin, IconCalendar, IconUser, IconFileText, IconReceipt } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { CustomBreadCrumbs } from '../components/CustomBreadCrumb';
 import { useParams } from 'react-router-dom';
@@ -225,11 +226,25 @@ export function LoanDetailsPage() {
         </Stack>
       </Card>
 
-      {/* EMIs Section */}
-      <LoanEMIsTable emis={emis} isLoading={isEMIsPending} />
+      {/* EMIs and Interests Tabs */}
+      <Tabs defaultValue="emis" radius="md">
+        <Tabs.List>
+          <Tabs.Tab value="emis" leftSection={<IconCoin size={16} />}>
+            EMIs ({emis.length})
+          </Tabs.Tab>
+          <Tabs.Tab value="interests" leftSection={<IconReceipt size={16} />}>
+            Interests ({interests.length})
+          </Tabs.Tab>
+        </Tabs.List>
 
-      {/* Interests Section */}
-      <LoanInterestsTable interests={interests} isLoading={isInterestsPending} />
+        <Tabs.Panel value="emis" pt="md">
+          <LoanEMIsTable emis={emis} isLoading={isEMIsPending} />
+        </Tabs.Panel>
+
+        <Tabs.Panel value="interests" pt="md">
+          <LoanInterestsTable interests={interests} isLoading={isInterestsPending} />
+        </Tabs.Panel>
+      </Tabs>
     </Stack>
   );
 }

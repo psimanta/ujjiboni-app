@@ -11,7 +11,6 @@ import {
   Tooltip,
   Center,
   Skeleton,
-  Title,
 } from '@mantine/core';
 import { IconCoin, IconEye, IconEdit } from '@tabler/icons-react';
 import type { ILoanEMI } from '../../../interfaces/loan.interface';
@@ -121,48 +120,43 @@ interface LoanEMIsTableProps {
 export function LoanEMIsTable({ emis, isLoading }: LoanEMIsTableProps) {
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
-      <Stack gap="md">
-        <Title order={3} size="h4" fw={600}>
-          EMIs
-        </Title>
-        <ScrollArea>
-          <Table striped highlightOnHover withTableBorder withColumnBorders>
-            <Table.Thead>
+      <ScrollArea>
+        <Table striped highlightOnHover withTableBorder withColumnBorders>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Amount</Table.Th>
+              <Table.Th>Due Date</Table.Th>
+              <Table.Th>Paid Date</Table.Th>
+              <Table.Th>Status</Table.Th>
+              <Table.Th>Entered By</Table.Th>
+              <Table.Th>Actions</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {isLoading ? (
+              <LoadingSkeleton />
+            ) : emis.length === 0 ? (
               <Table.Tr>
-                <Table.Th>Amount</Table.Th>
-                <Table.Th>Due Date</Table.Th>
-                <Table.Th>Paid Date</Table.Th>
-                <Table.Th>Status</Table.Th>
-                <Table.Th>Entered By</Table.Th>
-                <Table.Th>Actions</Table.Th>
+                <Table.Td colSpan={6}>
+                  <Center py="xl">
+                    <Stack align="center" gap="md">
+                      <IconCoin size={48} stroke={1.5} color="var(--mantine-color-gray-5)" />
+                      <Text size="lg" fw={500} c="dimmed">
+                        No EMIs found
+                      </Text>
+                      <Text size="sm" c="dimmed" ta="center">
+                        No EMI records have been created for this loan yet.
+                      </Text>
+                    </Stack>
+                  </Center>
+                </Table.Td>
               </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {isLoading ? (
-                <LoadingSkeleton />
-              ) : emis.length === 0 ? (
-                <Table.Tr>
-                  <Table.Td colSpan={6}>
-                    <Center py="xl">
-                      <Stack align="center" gap="md">
-                        <IconCoin size={48} stroke={1.5} color="var(--mantine-color-gray-5)" />
-                        <Text size="lg" fw={500} c="dimmed">
-                          No EMIs found
-                        </Text>
-                        <Text size="sm" c="dimmed" ta="center">
-                          No EMI records have been created for this loan yet.
-                        </Text>
-                      </Stack>
-                    </Center>
-                  </Table.Td>
-                </Table.Tr>
-              ) : (
-                emis.map(emi => <EMIRow key={emi._id} emi={emi} />)
-              )}
-            </Table.Tbody>
-          </Table>
-        </ScrollArea>
-      </Stack>
+            ) : (
+              emis.map(emi => <EMIRow key={emi._id} emi={emi} />)
+            )}
+          </Table.Tbody>
+        </Table>
+      </ScrollArea>
     </Card>
   );
 }

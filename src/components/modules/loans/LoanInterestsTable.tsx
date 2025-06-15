@@ -11,7 +11,6 @@ import {
   Tooltip,
   Center,
   Skeleton,
-  Title,
 } from '@mantine/core';
 import { IconFileText, IconEye, IconEdit } from '@tabler/icons-react';
 import type { ILoanInterest } from '../../../interfaces/loan.interface';
@@ -128,48 +127,43 @@ interface LoanInterestsTableProps {
 export function LoanInterestsTable({ interests, isLoading }: LoanInterestsTableProps) {
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
-      <Stack gap="md">
-        <Title order={3} size="h4" fw={600}>
-          Interests
-        </Title>
-        <ScrollArea>
-          <Table striped highlightOnHover withTableBorder withColumnBorders>
-            <Table.Thead>
+      <ScrollArea>
+        <Table striped highlightOnHover withTableBorder withColumnBorders>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Amount</Table.Th>
+              <Table.Th>Month</Table.Th>
+              <Table.Th>Paid Date</Table.Th>
+              <Table.Th>Status</Table.Th>
+              <Table.Th>Entered By</Table.Th>
+              <Table.Th>Actions</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {isLoading ? (
+              <LoadingSkeleton />
+            ) : interests.length === 0 ? (
               <Table.Tr>
-                <Table.Th>Amount</Table.Th>
-                <Table.Th>Month</Table.Th>
-                <Table.Th>Paid Date</Table.Th>
-                <Table.Th>Status</Table.Th>
-                <Table.Th>Entered By</Table.Th>
-                <Table.Th>Actions</Table.Th>
+                <Table.Td colSpan={6}>
+                  <Center py="xl">
+                    <Stack align="center" gap="md">
+                      <IconFileText size={48} stroke={1.5} color="var(--mantine-color-gray-5)" />
+                      <Text size="lg" fw={500} c="dimmed">
+                        No interests found
+                      </Text>
+                      <Text size="sm" c="dimmed" ta="center">
+                        No interest records have been created for this loan yet.
+                      </Text>
+                    </Stack>
+                  </Center>
+                </Table.Td>
               </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {isLoading ? (
-                <LoadingSkeleton />
-              ) : interests.length === 0 ? (
-                <Table.Tr>
-                  <Table.Td colSpan={6}>
-                    <Center py="xl">
-                      <Stack align="center" gap="md">
-                        <IconFileText size={48} stroke={1.5} color="var(--mantine-color-gray-5)" />
-                        <Text size="lg" fw={500} c="dimmed">
-                          No interests found
-                        </Text>
-                        <Text size="sm" c="dimmed" ta="center">
-                          No interest records have been created for this loan yet.
-                        </Text>
-                      </Stack>
-                    </Center>
-                  </Table.Td>
-                </Table.Tr>
-              ) : (
-                interests.map(interest => <InterestRow key={interest._id} interest={interest} />)
-              )}
-            </Table.Tbody>
-          </Table>
-        </ScrollArea>
-      </Stack>
+            ) : (
+              interests.map(interest => <InterestRow key={interest._id} interest={interest} />)
+            )}
+          </Table.Tbody>
+        </Table>
+      </ScrollArea>
     </Card>
   );
 }
