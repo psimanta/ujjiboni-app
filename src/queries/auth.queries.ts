@@ -29,7 +29,7 @@ export const useLoginMutation = () => {
       } as IRequestConfig);
       return data;
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PROFILE] });
     },
   });

@@ -1,6 +1,5 @@
 import {
   Table,
-  Badge,
   Text,
   Group,
   ActionIcon,
@@ -12,8 +11,9 @@ import {
   Center,
   Skeleton,
 } from '@mantine/core';
-import { IconFileText, IconEye, IconEdit } from '@tabler/icons-react';
+import { IconFileText, IconEdit } from '@tabler/icons-react';
 import type { ILoanInterest } from '../../../interfaces/loan.interface';
+import { InterestForm } from './InterestForm';
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('en-US', {
@@ -23,38 +23,22 @@ const formatDate = (dateString: string) => {
   });
 };
 
-const formatMonth = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-  });
-};
-
-const getStatusColor = (status: 'PENDING' | 'PAID' | 'OVERDUE') => {
-  switch (status) {
-    case 'PAID':
-      return 'green';
-    case 'PENDING':
-      return 'yellow';
-    case 'OVERDUE':
-      return 'red';
-    default:
-      return 'gray';
-  }
-};
-
 const InterestRow = ({ interest }: { interest: ILoanInterest }) => (
   <Table.Tr>
+    <Table.Td>{interest.paymentDate ? formatDate(interest.paymentDate) : '-'}</Table.Td>
     <Table.Td>
-      <NumberFormatter value={interest.amount} prefix="৳ " thousandSeparator="," />
+      <NumberFormatter value={interest.interestAmount} prefix="৳ " thousandSeparator="," />
     </Table.Td>
-    <Table.Td>{formatMonth(interest.month)}</Table.Td>
-    <Table.Td>{interest.paidDate ? formatDate(interest.paidDate) : '-'}</Table.Td>
     <Table.Td>
-      <Badge variant="light" color={getStatusColor(interest.status)} size="sm">
-        {interest.status}
-      </Badge>
+      <NumberFormatter value={interest.paidAmount} prefix="৳ " thousandSeparator="," />
     </Table.Td>
+    {/* <Table.Td>
+      <NumberFormatter
+        value={interest.interestAmount - interest.paidAmount}
+        prefix="৳ "
+        thousandSeparator=","
+      />
+    </Table.Td> */}
     <Table.Td>
       {interest.enteredBy ? (
         <Stack gap={2}>
@@ -71,11 +55,6 @@ const InterestRow = ({ interest }: { interest: ILoanInterest }) => (
     </Table.Td>
     <Table.Td>
       <Group gap="xs" justify="center">
-        <Tooltip label="View Details">
-          <ActionIcon variant="subtle" color="blue" size="sm">
-            <IconEye size={16} />
-          </ActionIcon>
-        </Tooltip>
         <Tooltip label="Edit Interest">
           <ActionIcon variant="subtle" color="gray" size="sm" disabled>
             <IconEdit size={16} />
@@ -122,19 +101,33 @@ const LoadingSkeleton = ({ rows = 3 }: { rows?: number }) => (
 interface LoanInterestsTableProps {
   interests: ILoanInterest[];
   isLoading: boolean;
+  interestPaymentMonth: string;
+  currentMonthInterest: number;
+  totalInterestDue: number;
 }
 
-export function LoanInterestsTable({ interests, isLoading }: LoanInterestsTableProps) {
+export function LoanInterestsTable({
+  interests,
+  isLoading,
+  interestPaymentMonth,
+  currentMonthInterest,
+  totalInterestDue,
+}: LoanInterestsTableProps) {
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
+      <InterestForm
+        interestPaymentMonth={interestPaymentMonth}
+        currentMonthInterest={currentMonthInterest}
+        totalInterestDue={totalInterestDue}
+      />
       <ScrollArea>
         <Table striped highlightOnHover withTableBorder withColumnBorders>
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Amount</Table.Th>
               <Table.Th>Month</Table.Th>
-              <Table.Th>Paid Date</Table.Th>
-              <Table.Th>Status</Table.Th>
+              <Table.Th>InterestAmount</Table.Th>
+              <Table.Th>Paid Amount</Table.Th>
+              {/* <Table.Th>Due Amount</Table.Th> */}
               <Table.Th>Entered By</Table.Th>
               <Table.Th>Actions</Table.Th>
             </Table.Tr>

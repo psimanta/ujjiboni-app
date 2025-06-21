@@ -75,6 +75,11 @@ export function AppLayout() {
       >
         <Group h={60} px="md" justify="space-between">
           <Group gap={4}>
+            {isAuthenticated && (
+              <>
+                <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+              </>
+            )}
             <Image
               src={logo}
               alt="Ujjiboni Logo"
@@ -86,7 +91,6 @@ export function AppLayout() {
             <ThemeToggle />
             {isAuthenticated && (
               <>
-                <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
                 <ActionIcon variant="transparent" onClick={() => logout()}>
                   <IconPower color="var(--mantine-color-red-5)" size={22} stroke={1.5} />
                 </ActionIcon>

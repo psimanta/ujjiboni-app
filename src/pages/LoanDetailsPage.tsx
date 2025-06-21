@@ -12,13 +12,14 @@ import {
   Tabs,
 } from '@mantine/core';
 import { IconCoin, IconCalendar, IconUser, IconFileText, IconReceipt } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CustomBreadCrumbs } from '../components/CustomBreadCrumb';
 import { useParams } from 'react-router-dom';
 import { useLoanQuery, useLoanEMIsQuery, useLoanInterestsQuery } from '../queries/loan.queries';
 import { LoanEMIsTable } from '../components/modules/loans/LoanEMIsTable';
 import { LoanInterestsTable } from '../components/modules/loans/LoanInterestsTable';
 import type { LoanStatus, LoanType } from '../interfaces/loan.interface';
+import dayjs from 'dayjs';
 
 const formatMonth = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('en-US', {
@@ -62,7 +63,24 @@ export function LoanDetailsPage() {
 
   const loan = loanData?.loan;
   const emis = emisData?.payments || [];
-  const interests = interestsData?.interests || [];
+
+  const interestPaymentMonth = useMemo(() => {
+    if (!loan?.loanDisbursementMonth) return '';
+    const lastInterestPaymentDate = interestsData?.interests[0]?.paymentDate;
+    if (lastInterestPaymentDate) {
+      console.log('lastInterestPaymentDate', lastInterestPaymentDate);
+      console.log(dayjs(lastInterestPaymentDate).add(1, 'month').format('YYYY-MM-DD'));
+      return dayjs(lastInterestPaymentDate).add(1, 'month').format('YYYY-MM-DD');
+    }
+    return dayjs(loan?.loanDisbursementMonth).add(2, 'month').format('YYYY-MM-DD');
+  }, [loan?.loanDisbursementMonth, interestsData?.interests]);
+
+  const currentMonthInterest =
+    ((loanData?.outstandingBalance || 0) * (loan?.monthlyInterestRate || 0)) / 100;
+
+  const totalInterestDue =
+    (interestsData?.paymentSummary?.totalInterest || 0) -
+    (interestsData?.paymentSummary?.totalPaidAmount || 0);
 
   useEffect(() => {
     if (loan) {
@@ -249,7 +267,7 @@ export function LoanDetailsPage() {
             EMIs ({emis.length})
           </Tabs.Tab>
           <Tabs.Tab value="interests" leftSection={<IconReceipt size={16} />}>
-            Interests ({interests.length})
+            Interests ({interestsData?.interests.length})
           </Tabs.Tab>
         </Tabs.List>
 
@@ -258,7 +276,13 @@ export function LoanDetailsPage() {
         </Tabs.Panel>
 
         <Tabs.Panel value="interests" pt="md">
-          <LoanInterestsTable interests={interests} isLoading={isInterestsPending} />
+          <LoanInterestsTable
+            interests={interestsData?.interests || []}
+            isLoading={isInterestsPending}
+            interestPaymentMonth={interestPaymentMonth}
+            currentMonthInterest={currentMonthInterest}
+            totalInterestDue={totalInterestDue}
+          />
         </Tabs.Panel>
       </Tabs>
     </Stack>

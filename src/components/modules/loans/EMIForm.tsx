@@ -1,4 +1,4 @@
-import { Group, NumberInput, Button, Text, Stack, Alert, SimpleGrid, Paper } from '@mantine/core';
+import { NumberInput, Button, Text, Stack, Alert, SimpleGrid, Paper } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { IconReceipt, IconX } from '@tabler/icons-react';
@@ -66,14 +66,18 @@ export function EMIForm() {
     <Paper radius="md" p="md">
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap="md">
-          <Group grow align="flex-end">
+          <SimpleGrid
+            cols={{ base: 1, sm: 2, md: 3 }}
+            style={{
+              alignItems: 'flex-end',
+            }}
+          >
             <NumberInput
               label="EMI Amount"
               placeholder="Enter payment amount"
               leftSection={<Text size="sm">৳</Text>}
               radius="md"
               min={0}
-              max={10000000}
               thousandSeparator=","
               thousandsGroupStyle="lakh"
               size="sm"
@@ -111,7 +115,7 @@ export function EMIForm() {
                 Clear
               </Button>
             </SimpleGrid>
-          </Group>
+          </SimpleGrid>
           {error && <Alert color="red" title={error} radius="md" />}
         </Stack>
       </form>

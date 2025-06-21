@@ -11,8 +11,6 @@ export function MembersPage() {
         Members
       </Title>
 
-      {/* Filters and Search */}
-
       <Card shadow="sm" padding="0" radius="lg" withBorder>
         <Table.ScrollContainer minWidth={800}>
           <Table verticalSpacing="md" horizontalSpacing="lg" highlightOnHover>

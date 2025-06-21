@@ -58,18 +58,18 @@ export interface ILoanEMI {
 
 export interface ILoanInterest {
   _id: string;
-  loanId: string;
-  amount: number;
-  month: string;
-  paidDate?: string;
-  status: 'PENDING' | 'PAID' | 'OVERDUE';
-  enteredBy?: {
+  loan: ILoan;
+  paymentDate?: string;
+  penaltyAmount: number;
+  interestAmount: number;
+  paidAmount: number;
+  enteredBy: {
     _id: string;
     email: string;
     fullName: string;
   };
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface ILoansResponse extends IResponseGeneric {
@@ -102,4 +102,19 @@ export interface ICreateLoanEMIPayload {
 
 export interface ILoanEMICreationResponse extends IResponseGeneric {
   payment: ILoanEMI;
+}
+
+export interface ICreateLoanInterestPayload {
+  interestAmount: number;
+  paidAmount: number;
+  paymentDate: string;
+}
+
+export interface ILoanInterestsResponse extends IResponseGeneric {
+  interests: ILoanInterest[];
+  paymentSummary: {
+    totalPayments: number;
+    totalInterest: number;
+    totalPaidAmount: number;
+  };
 }

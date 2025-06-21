@@ -4,21 +4,18 @@ import { QUERY_KEYS } from '../constants/queries';
 import type { IResponseError, IResponseGeneric } from '../interfaces/response.interface';
 import type {
   ILoanEMI,
-  ILoanInterest,
   ILoanCreationResponse,
   ILoansResponse,
   ILoanResponse,
   ICreateLoanPayload,
   ICreateLoanEMIPayload,
   ILoanEMICreationResponse,
+  ICreateLoanInterestPayload,
+  ILoanInterestsResponse,
 } from '../interfaces/loan.interface';
 
 interface ILoanEMIsResponse extends IResponseGeneric {
   payments: ILoanEMI[];
-}
-
-interface ILoanInterestsResponse extends IResponseGeneric {
-  interests: ILoanInterest[];
 }
 
 export const useLoansQuery = (
@@ -66,17 +63,6 @@ export const useLoanQuery = (id: string) => {
   });
 };
 
-export const useLoanInterestsQuery = (loanId: string) => {
-  return useQuery<ILoanInterestsResponse, IResponseError>({
-    queryKey: [QUERY_KEYS.LOAN, loanId, 'interests'],
-    queryFn: async () => {
-      const { data } = await api.get<ILoanInterestsResponse>(`/loans/${loanId}/interests`);
-      return data;
-    },
-    enabled: !!loanId,
-  });
-};
-
 export const useCreateLoanMutation = () => {
   const queryClient = useQueryClient();
 
@@ -119,6 +105,37 @@ export const useCreateLoanEMIMutation = () => {
     onSuccess: (_, { loanId }) => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.LOAN_EMIS, loanId] });
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.LOAN, loanId] });
+    },
+  });
+};
+
+export const useLoanInterestsQuery = (loanId: string) => {
+  return useQuery<ILoanInterestsResponse, IResponseError>({
+    queryKey: [QUERY_KEYS.LOAN_INTERESTS, loanId],
+    queryFn: async () => {
+      const { data } = await api.get<ILoanInterestsResponse>(`/loans/${loanId}/interests`);
+      return data;
+    },
+    enabled: !!loanId,
+  });
+};
+
+export const useCreateLoanInterestMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    ILoanInterestsResponse,
+    IResponseError,
+    {
+      loanId: string;
+      payload: ICreateLoanInterestPayload;
+    }
+  >({
+    mutationFn: async ({ loanId, payload }) => {
+      const { data } = await api.post(`/loans/${loanId}/interests`, payload);
+      return data;
+    },
+    onSuccess: (_, { loanId }) => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.LOAN_INTERESTS, loanId] });
     },
   });
 };
