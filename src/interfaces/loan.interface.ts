@@ -63,6 +63,8 @@ export interface ILoanInterest {
   penaltyAmount: number;
   interestAmount: number;
   paidAmount: number;
+  previousInterestDue: number;
+  dueAfterInterestPayment: number;
   enteredBy: {
     _id: string;
     email: string;
@@ -108,6 +110,8 @@ export interface ICreateLoanInterestPayload {
   interestAmount: number;
   paidAmount: number;
   paymentDate: string;
+  dueAfterInterestPayment: number;
+  previousInterestDue: number;
 }
 
 export interface ILoanInterestsResponse extends IResponseGeneric {

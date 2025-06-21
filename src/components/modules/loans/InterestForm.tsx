@@ -1,5 +1,4 @@
 import { NumberInput, Button, Text, Stack, Alert, SimpleGrid, Paper } from '@mantine/core';
-import { MonthPickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { IconReceipt, IconX as _IconX } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
@@ -12,6 +11,29 @@ interface InterestFormData {
   month: string;
   dueAmount?: number;
 }
+
+const InfoCard = ({
+  label,
+  value,
+  color = 'blue',
+  prefix = '৳ ',
+}: {
+  label: string;
+  value: number | string;
+  color?: string;
+  prefix?: string;
+}) => (
+  <Paper withBorder p="sm" radius="md" style={{ borderColor: `var(--mantine-color-${color}-3)` }}>
+    <Stack gap={4}>
+      <Text size="xs" fw={500} c="dimmed" tt="uppercase">
+        {label}
+      </Text>
+      <Text size="sm" fw={600} c={color}>
+        {typeof value === 'number' ? `${prefix}${value.toLocaleString()}` : value}
+      </Text>
+    </Stack>
+  </Paper>
+);
 
 export function InterestForm({
   interestPaymentMonth,
@@ -63,6 +85,8 @@ export function InterestForm({
       interestAmount: currentMonthInterest,
       paidAmount: values.amount,
       paymentDate: values.month,
+      dueAfterInterestPayment: dueAmount || 0,
+      previousInterestDue: totalInterestDue,
     };
 
     mutate(
@@ -86,63 +110,36 @@ export function InterestForm({
     form.setFieldValue('month', interestPaymentMonth);
   }, [interestPaymentMonth]);
 
+  const formatMonth = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+    });
+  };
+
   return (
     <Paper radius="md" p="md" mb="md">
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap="md">
-          <SimpleGrid
-            cols={{ base: 1, sm: 2, md: 2 }}
-            style={{
-              alignItems: 'flex-end',
-            }}
-          >
-            <MonthPickerInput
-              label="Month"
-              placeholder="Select month"
-              radius="md"
-              size="sm"
-              readOnly
-              styles={{
-                input: {
-                  cursor: 'not-allowed',
-                },
-              }}
-              {...form.getInputProps('month')}
+          {/* Summary Cards */}
+          <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="sm">
+            <InfoCard
+              label="Payment Month"
+              value={formatMonth(interestPaymentMonth)}
+              color="blue"
+              prefix=""
             />
-
-            <NumberInput
-              label="Previous Due"
-              value={totalInterestDue}
-              readOnly
-              radius="md"
-              min={0}
-              thousandSeparator=","
-              thousandsGroupStyle="lakh"
-              size="sm"
-            />
-
-            <NumberInput
-              label="Current Month Interest"
-              value={currentMonthInterest}
-              readOnly
-              radius="md"
-              min={0}
-              thousandSeparator=","
-              thousandsGroupStyle="lakh"
-              size="sm"
-            />
-
-            <NumberInput
-              label="Total Interest Due"
+            <InfoCard label="Previous Due" value={totalInterestDue} color="orange" />
+            <InfoCard label="Current Interest" value={currentMonthInterest} color="green" />
+            <InfoCard
+              label="Total Due"
               value={totalInterestDueWithCurrentMonthInterest}
-              readOnly
-              radius="md"
-              min={0}
-              thousandSeparator=","
-              thousandsGroupStyle="lakh"
-              size="sm"
+              color="red"
             />
+          </SimpleGrid>
 
+          {/* Input Fields */}
+          <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md">
             <NumberInput
               label="Paid Amount"
               placeholder="Enter paid amount"
@@ -157,47 +154,28 @@ export function InterestForm({
             />
 
             <NumberInput
+              label="Due After Payment"
+              value={dueAmount || 0}
               readOnly
-              label="Due Amount"
-              placeholder="Enter due amount"
-              leftSection={<Text size="sm">৳</Text>}
               radius="md"
               min={0}
               thousandSeparator=","
               thousandsGroupStyle="lakh"
               size="sm"
-              styles={{
-                input: {
-                  cursor: 'not-allowed',
-                },
-              }}
-              value={dueAmount}
             />
 
-            <SimpleGrid cols={2}>
-              <Button
-                type="submit"
-                leftSection={<IconReceipt size={16} />}
-                radius="md"
-                size="sm"
-                loading={isPending}
-              >
-                Add
-              </Button>
-              {/* <Button
-                disabled={isPending}
-                type="button"
-                variant="light"
-                leftSection={<IconX size={16} />}
-                color="gray"
-                onClick={() => form.reset()}
-                radius="md"
-                size="sm"
-              >
-                Clear
-              </Button> */}
-            </SimpleGrid>
+            <Button
+              type="submit"
+              leftSection={<IconReceipt size={16} />}
+              radius="md"
+              size="sm"
+              loading={isPending}
+              style={{ alignSelf: 'end' }}
+            >
+              Add Payment
+            </Button>
           </SimpleGrid>
+
           {error && <Alert color="red" title={error} radius="md" />}
         </Stack>
       </form>

@@ -11,7 +11,7 @@ import {
   SimpleGrid,
   Tabs,
 } from '@mantine/core';
-import { IconCoin, IconCalendar, IconUser, IconFileText, IconReceipt } from '@tabler/icons-react';
+import { IconCoin, IconUser, IconFileText, IconReceipt } from '@tabler/icons-react';
 import { useEffect, useMemo, useState } from 'react';
 import { CustomBreadCrumbs } from '../components/CustomBreadCrumb';
 import { useParams } from 'react-router-dom';
@@ -148,13 +148,16 @@ export function LoanDetailsPage() {
               <Title order={2} size="h3" fw={600}>
                 {loan.loanNumber}
               </Title>
+              <Badge variant="light" color={getLoanTypeColor(loan.loanType)}>
+                {loan.loanType}
+              </Badge>
             </Group>
             <Badge variant="light" color={getStatusColor(loan.status)} size="lg">
               {loan.status}
             </Badge>
           </Group>
 
-          <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }} spacing="md">
+          <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="md">
             <Card withBorder radius="md" p="md">
               <Stack gap="xs">
                 <Group gap="xs">
@@ -171,16 +174,22 @@ export function LoanDetailsPage() {
             </Card>
 
             <Card withBorder radius="md" p="md">
-              <Stack gap="xs">
-                <Group gap="xs">
-                  <IconCoin size={16} />
-                  <Text size="sm" c="dimmed">
-                    Principal Amount
+              <Stack>
+                <Stack gap="xs">
+                  <Group gap="xs">
+                    <IconCoin size={16} />
+                    <Text size="sm" c="dimmed">
+                      Principal Amount
+                    </Text>
+                  </Group>
+                  <Text fw={600} c="blue">
+                    <NumberFormatter
+                      value={loan.principalAmount}
+                      prefix="৳ "
+                      thousandSeparator=","
+                    />
                   </Text>
-                </Group>
-                <Text fw={600} c="blue">
-                  <NumberFormatter value={loan.principalAmount} prefix="৳ " thousandSeparator="," />
-                </Text>
+                </Stack>
               </Stack>
             </Card>
 
@@ -195,23 +204,9 @@ export function LoanDetailsPage() {
                 <Text fw={600}>{loan.monthlyInterestRate}% / month</Text>
               </Stack>
             </Card>
-
-            <Card withBorder radius="md" p="md">
-              <Stack gap="xs">
-                <Group gap="xs">
-                  <IconCalendar size={16} />
-                  <Text size="sm" c="dimmed">
-                    Loan Type
-                  </Text>
-                </Group>
-                <Badge variant="light" color={getLoanTypeColor(loan.loanType)}>
-                  {loan.loanType}
-                </Badge>
-              </Stack>
-            </Card>
           </SimpleGrid>
 
-          <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md">
+          <SimpleGrid cols={{ base: 1, sm: 4 }} spacing="md">
             <Card withBorder radius="md" p="md">
               <Stack gap="xs">
                 <Text size="sm" c="dimmed">
@@ -238,6 +233,22 @@ export function LoanDetailsPage() {
                 <Text fw={500} c="red">
                   <NumberFormatter
                     value={loanData?.outstandingBalance}
+                    prefix="৳ "
+                    thousandSeparator=","
+                    thousandsGroupStyle="lakh"
+                  />
+                </Text>
+              </Stack>
+            </Card>
+
+            <Card withBorder radius="md" p="md">
+              <Stack gap="xs">
+                <Text size="sm" c="dimmed">
+                  Total Interest Paid
+                </Text>
+                <Text fw={500} c="green">
+                  <NumberFormatter
+                    value={interestsData?.paymentSummary?.totalPaidAmount}
                     prefix="৳ "
                     thousandSeparator=","
                     thousandsGroupStyle="lakh"

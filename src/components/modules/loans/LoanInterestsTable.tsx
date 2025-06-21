@@ -23,47 +23,59 @@ const formatDate = (dateString: string) => {
   });
 };
 
-const InterestRow = ({ interest }: { interest: ILoanInterest }) => (
-  <Table.Tr>
-    <Table.Td>{interest.paymentDate ? formatDate(interest.paymentDate) : '-'}</Table.Td>
-    <Table.Td>
-      <NumberFormatter value={interest.interestAmount} prefix="৳ " thousandSeparator="," />
-    </Table.Td>
-    <Table.Td>
-      <NumberFormatter value={interest.paidAmount} prefix="৳ " thousandSeparator="," />
-    </Table.Td>
-    {/* <Table.Td>
-      <NumberFormatter
-        value={interest.interestAmount - interest.paidAmount}
-        prefix="৳ "
-        thousandSeparator=","
-      />
-    </Table.Td> */}
-    <Table.Td>
-      {interest.enteredBy ? (
-        <Stack gap={2}>
-          <Text size="sm" fw={500}>
-            {interest.enteredBy.fullName}
-          </Text>
-          <Text size="xs" c="dimmed">
-            {interest.enteredBy.email}
-          </Text>
-        </Stack>
-      ) : (
-        '-'
-      )}
-    </Table.Td>
-    <Table.Td>
-      <Group gap="xs" justify="center">
-        <Tooltip label="Edit Interest">
-          <ActionIcon variant="subtle" color="gray" size="sm" disabled>
-            <IconEdit size={16} />
-          </ActionIcon>
-        </Tooltip>
-      </Group>
-    </Table.Td>
-  </Table.Tr>
-);
+const InterestRow = ({ interest }: { interest: ILoanInterest }) => {
+  return (
+    <Table.Tr>
+      <Table.Td>{interest.paymentDate ? formatDate(interest.paymentDate) : '-'}</Table.Td>
+      <Table.Td>
+        <NumberFormatter value={interest.previousInterestDue} prefix="৳ " thousandSeparator="," />
+      </Table.Td>
+      <Table.Td>
+        <NumberFormatter value={interest.interestAmount} prefix="৳ " thousandSeparator="," />
+      </Table.Td>
+      <Table.Td>
+        <NumberFormatter
+          value={interest.previousInterestDue + interest.interestAmount}
+          prefix="৳ "
+          thousandSeparator=","
+        />
+      </Table.Td>
+      <Table.Td>
+        <NumberFormatter value={interest.paidAmount} prefix="৳ " thousandSeparator="," />
+      </Table.Td>
+      <Table.Td>
+        <NumberFormatter
+          value={interest.dueAfterInterestPayment}
+          prefix="৳ "
+          thousandSeparator=","
+        />
+      </Table.Td>
+      <Table.Td>
+        {interest.enteredBy ? (
+          <Stack gap={2}>
+            <Text size="sm" fw={500}>
+              {interest.enteredBy.fullName}
+            </Text>
+            <Text size="xs" c="dimmed">
+              {interest.enteredBy.email}
+            </Text>
+          </Stack>
+        ) : (
+          '-'
+        )}
+      </Table.Td>
+      <Table.Td>
+        <Group gap="xs" justify="center">
+          <Tooltip label="Edit Interest">
+            <ActionIcon variant="subtle" color="gray" size="sm" disabled>
+              <IconEdit size={16} />
+            </ActionIcon>
+          </Tooltip>
+        </Group>
+      </Table.Td>
+    </Table.Tr>
+  );
+};
 
 const LoadingSkeleton = ({ rows = 3 }: { rows?: number }) => (
   <>
@@ -125,9 +137,11 @@ export function LoanInterestsTable({
           <Table.Thead>
             <Table.Tr>
               <Table.Th>Month</Table.Th>
-              <Table.Th>InterestAmount</Table.Th>
+              <Table.Th>Previous Due</Table.Th>
+              <Table.Th>Interest Amount</Table.Th>
+              <Table.Th>Total Due</Table.Th>
               <Table.Th>Paid Amount</Table.Th>
-              {/* <Table.Th>Due Amount</Table.Th> */}
+              <Table.Th>Due After Payment</Table.Th>
               <Table.Th>Entered By</Table.Th>
               <Table.Th>Actions</Table.Th>
             </Table.Tr>
