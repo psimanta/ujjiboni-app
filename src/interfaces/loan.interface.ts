@@ -1,16 +1,8 @@
 import type { IResponseGeneric } from './response.interface';
 
-export enum LoanStatus {
-  ACTIVE = 'ACTIVE',
-  COMPLETED = 'COMPLETED',
-}
+export type LoanStatus = 'ACTIVE' | 'COMPLETED';
 
-export enum LoanType {
-  PERSONAL = 'PERSONAL',
-  BUSINESS = 'BUSINESS',
-  EMERGENCY = 'EMERGENCY',
-  EDUCATION = 'EDUCATION',
-}
+export type LoanType = 'PERSONAL' | 'BUSINESS' | 'EMERGENCY' | 'EDUCATION';
 
 export interface ILoan {
   _id: string;

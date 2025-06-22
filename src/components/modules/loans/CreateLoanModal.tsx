@@ -15,7 +15,7 @@ import { IconCoin, IconUser, IconCalendar, IconPercentage, IconNotes } from '@ta
 import { useState } from 'react';
 import { useCreateLoanMutation } from '../../../queries/loan.queries';
 import { useStore } from '../../../store';
-import { LoanType } from '../../../interfaces/loan.interface';
+import type { LoanType } from '../../../interfaces/loan.interface';
 
 interface CreateLoanModalProps {
   opened: boolean;
