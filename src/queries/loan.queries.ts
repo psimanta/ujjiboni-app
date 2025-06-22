@@ -139,3 +139,13 @@ export const useCreateLoanInterestMutation = () => {
     },
   });
 };
+
+export const useLoanStatsQuery = () => {
+  return useQuery<IResponseGeneric, IResponseError>({
+    queryKey: [QUERY_KEYS.LOAN_STATS],
+    queryFn: async () => {
+      const { data } = await api.get('/loans/member/stats');
+      return data;
+    },
+  });
+};

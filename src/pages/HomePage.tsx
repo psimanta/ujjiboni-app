@@ -1,9 +1,21 @@
-import { Container, Title, Text, Stack, Card, Group, Badge } from '@mantine/core';
+import { Container, Title, Text, Stack, Card, Group, Badge, NumberFormatter } from '@mantine/core';
 import { IconLayoutDashboard } from '@tabler/icons-react';
 import { useStore } from '../store';
+import { useLoanStatsQuery } from '../queries/loan.queries';
 
 export function HomePage() {
   const { user } = useStore(state => state);
+  const { data: loanStats } = useLoanStatsQuery();
+  const loans = loanStats?.loans || [];
+
+  const totalOutstandingBalance = loans.reduce((acc, loan) => acc + loan.outstandingBalance, 0);
+  const totalInterestDue = loans.reduce(
+    (acc, loan) =>
+      acc +
+      (loan.interestPaymentSummary?.totalInterest || 0) -
+      (loan.interestPaymentSummary?.totalPaidAmount || 0),
+    0
+  );
 
   return (
     <Container size="xl" py="xl">
@@ -31,33 +43,37 @@ export function HomePage() {
         <Group gap="md" w="100%" maw={600}>
           <Card shadow="xs" padding="md" radius="md" flex={1}>
             <Stack gap="xs" align="center">
-              <Text size="xl" fw={700} c="blue">
-                24/7
-              </Text>
-              <Text size="sm" c="dimmed" ta="center">
-                Uptime
-              </Text>
-            </Stack>
-          </Card>
-
-          <Card shadow="xs" padding="md" radius="md" flex={1}>
-            <Stack gap="xs" align="center">
-              <Text size="xl" fw={700} c="green">
-                100%
-              </Text>
-              <Text size="sm" c="dimmed" ta="center">
-                Performance
-              </Text>
-            </Stack>
-          </Card>
-
-          <Card shadow="xs" padding="md" radius="md" flex={1}>
-            <Stack gap="xs" align="center">
               <Text size="xl" fw={700} c="orange">
-                0
+                {loans.length}
               </Text>
               <Text size="sm" c="dimmed" ta="center">
-                Issues
+                Total Active Loans
+              </Text>
+            </Stack>
+          </Card>
+
+          <Card shadow="xs" padding="md" radius="md" flex={1}>
+            <Stack gap="xs" align="center">
+              <Text size="xl" fw={700} c="blue">
+                <NumberFormatter
+                  value={totalOutstandingBalance}
+                  prefix="৳ "
+                  thousandSeparator=","
+                />
+              </Text>
+              <Text size="sm" c="dimmed" ta="center">
+                Total Outstanding
+              </Text>
+            </Stack>
+          </Card>
+
+          <Card shadow="xs" padding="md" radius="md" flex={1}>
+            <Stack gap="xs" align="center">
+              <Text size="xl" fw={700} c="red">
+                <NumberFormatter value={totalInterestDue} prefix="৳ " thousandSeparator="," />
+              </Text>
+              <Text size="sm" c="dimmed" ta="center">
+                Total Interest Due
               </Text>
             </Stack>
           </Card>
