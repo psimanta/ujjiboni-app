@@ -77,3 +77,20 @@ export const usePasswordChangeMutation = () => {
     },
   });
 };
+
+interface ISetupPasswordResponse extends IResponseGeneric {
+  token?: string;
+}
+
+export const useSetupPasswordMutation = () => {
+  return useMutation<
+    ISetupPasswordResponse,
+    IResponseError,
+    { password: string; email: string; confirmPassword: string; otpCode: string }
+  >({
+    mutationFn: async payload => {
+      const { data } = await api.post<IResponseGeneric>('/auth/setup-password-with-otp', payload);
+      return data;
+    },
+  });
+};
