@@ -19,6 +19,8 @@ export interface ILoan {
   notes?: string;
   loanDisbursementMonth: string;
   interestStartMonth: string;
+  outstandingBalance?: number;
+  interestPaymentSummary?: ILoanInterestPaymentSummary;
   enteredBy: {
     _id: string;
     email: string;
@@ -106,11 +108,23 @@ export interface ICreateLoanInterestPayload {
   previousInterestDue: number;
 }
 
+export interface ILoanInterestPaymentSummary {
+  totalPayments: number;
+  totalInterest: number;
+  totalPaidAmount: number;
+}
+
 export interface ILoanInterestsResponse extends IResponseGeneric {
   interests: ILoanInterest[];
-  paymentSummary: {
-    totalPayments: number;
-    totalInterest: number;
-    totalPaidAmount: number;
-  };
+  paymentSummary: ILoanInterestPaymentSummary;
+}
+
+export interface ILoanEMIsResponse extends IResponseGeneric {
+  payments: ILoanEMI[];
+}
+
+export interface ILoanStatsResponse extends IResponseGeneric {
+  loans: ILoan[];
+  totalOutstandingBalance: number;
+  totalInterestDue: number;
 }

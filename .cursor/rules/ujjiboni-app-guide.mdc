@@ -1,0 +1,278 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Ujjiboni App Development Guide
+
+## Project Overview
+Ujjiboni is a financial management application built with React, TypeScript, and modern web technologies. It handles accounts, loans, transactions, and member management for financial institutions.
+
+## Architecture & Tech Stack
+
+### Core Technologies
+- **Frontend**: React 19 + TypeScript + Vite
+- **UI Framework**: Mantine UI components + TailwindCSS
+- **State Management**: Zustand with persistence
+- **Data Fetching**: TanStack React Query (v5)
+- **Routing**: React Router v7 with protected routes
+- **HTTP Client**: Axios
+- **Date Handling**: Day.js
+- **Icons**: Tabler Icons React
+- **Animations**: Framer Motion
+
+### Key Dependencies
+- Main app: [App.tsx](mdc:src/App.tsx)
+- Router configuration: [router.tsx](mdc:src/router.tsx)
+- Global store: [store/index.ts](mdc:src/store/index.ts)
+- Query client setup: [queries/queryClient.ts](mdc:src/queries/queryClient.ts)
+
+## Project Structure
+
+```
+src/
+├── components/           # Reusable UI components
+│   ├── modules/         # Feature-specific components
+│   │   ├── accounts/    # Account management components
+│   │   └── loans/       # Loan management components
+│   └── [Component].tsx  # Shared components (PascalCase)
+├── pages/               # Route-level page components
+├── interfaces/          # TypeScript interface definitions
+├── queries/             # React Query hooks and API calls
+├── constants/           # Application constants
+├── utils/               # Utility functions
+├── store/               # Zustand store configuration
+├── layouts/             # Layout components
+└── styles/              # Global styles
+```
+
+## Component Patterns
+
+### Component Organization
+- **Modular Structure**: Components are organized by feature modules under `components/modules/`
+- **Page Components**: Top-level route components in `pages/` directory
+- **Shared Components**: Reusable components directly under `components/`
+
+### Component Examples
+- Account list: [components/modules/accounts/ListAccounts.tsx](mdc:src/components/modules/accounts/ListAccounts.tsx)
+- Account details: [pages/AccountDetailsPage.tsx](mdc:src/pages/AccountDetailsPage.tsx)
+- Shared layout: [layouts/AppLayout.tsx](mdc:src/layouts/AppLayout.tsx)
+
+### Naming Conventions
+- **Components**: PascalCase (e.g., `ListAccounts.tsx`)
+- **Hooks**: camelCase with `use` prefix (e.g., `useAccountsQuery`)
+- **Interfaces**: PascalCase with `I` prefix (e.g., `IAccount`)
+- **Constants**: SCREAMING_SNAKE_CASE
+
+## Data Fetching Patterns
+
+### React Query Setup
+- Query client: [queries/queryClient.ts](mdc:src/queries/queryClient.ts)
+- Query keys: [constants/queries.ts](mdc:src/constants/queries.ts)
+- API configuration: [queries/api.ts](mdc:src/queries/api.ts)
+
+### Query Hook Pattern
+All API interactions use custom React Query hooks:
+```typescript
+// Example from account.queries.ts
+export const useAccountsQuery = () => {
+  return useQuery<IAccountResponse, IResponseError>({
+    queryKey: [QUERY_KEYS.ACCOUNTS],
+    queryFn: async () => {
+      const { data } = await api.get<IAccountResponse>('/accounts');
+      return data;
+    },
+  });
+};
+```
+
+### Mutation Pattern
+```typescript
+export const useCreateAccountMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation<ICreateAccountResponse, IResponseError, ICreateAccountPayload>({
+    mutationFn: async payload => {
+      const { data } = await api.post<ICreateAccountResponse>('/accounts', payload);
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ACCOUNTS] });
+    },
+  });
+};
+```
+
+### Query Files
+- Account queries: [queries/account.queries.ts](mdc:src/queries/account.queries.ts)
+- Loan queries: [queries/loan.queries.ts](mdc:src/queries/loan.queries.ts)
+- Auth queries: [queries/auth.queries.ts](mdc:src/queries/auth.queries.ts)
+- User queries: [queries/user.queries.ts](mdc:src/queries/user.queries.ts)
+
+## State Management
+
+### Zustand Store
+Global state is managed using Zustand with localStorage persistence:
+- Store configuration: [store/index.ts](mdc:src/store/index.ts)
+- Includes: authentication, theme, user data, and members
+
+### Store Pattern
+```typescript
+interface IStore {
+  isAuthenticated: boolean;
+  theme: MantineColorScheme;
+  user: IUser | null;
+  members: IUser[];
+}
+
+interface IStoreActions {
+  setIsAuthenticated: (isAuthenticated: boolean) => void;
+  toggleTheme: () => void;
+  setUser: (user: IUser) => void;
+  logout: () => void;
+}
+```
+
+## TypeScript Interfaces
+
+### Interface Organization
+- Account interfaces: [interfaces/account.interface.ts](mdc:src/interfaces/account.interface.ts)
+- Loan interfaces: [interfaces/loan.interface.ts](mdc:src/interfaces/loan.interface.ts)
+- User interfaces: [interfaces/user.interface.ts](mdc:src/interfaces/user.interface.ts)
+- API response interfaces: [interfaces/response.interface.ts](mdc:src/interfaces/response.interface.ts)
+- Request interfaces: [interfaces/request.interface.ts](mdc:src/interfaces/request.interface.ts)
+
+### Interface Naming
+- Prefix with `I` (e.g., `IAccount`, `ITransaction`)
+- Use descriptive names that match domain concepts
+- Separate request/response interfaces when needed
+
+## Routing & Navigation
+
+### Router Setup
+- Main router: [router.tsx](mdc:src/router.tsx)
+- Protected routes based on authentication state
+- Nested routes under `AppLayout` component
+
+### Route Structure
+```
+/ → HomePage
+/accounts → AccountsPage
+/accounts/:id → AccountDetailsPage
+/loans → LoansPage
+/loans/:id → LoanDetailsPage
+/members → MembersPage
+/login → LoginPage (unauthenticated only)
+```
+
+## UI Components & Styling
+
+### Mantine UI Usage
+- Consistent use of Mantine components for UI elements
+- Theme configuration in [App.tsx](mdc:src/App.tsx)
+- Dark/light theme toggle via Zustand store
+
+### Component Patterns
+- Use `Stack` for vertical layouts
+- Use `Group` for horizontal layouts
+- Use `Card` for content containers
+- Use `SimpleGrid` for responsive grids
+- Use `Badge` for status indicators
+
+### Loading States
+- Skeleton loading for lists and grids
+- Full-page loader: [components/FullPageLoader.tsx](mdc:src/components/FullPageLoader.tsx)
+- Module-specific loaders: [components/modules/accounts/loaders/](mdc:src/components/modules/accounts/loaders)
+
+## Constants & Configuration
+
+### Constants Organization
+- Account types: [constants/account.ts](mdc:src/constants/account.ts)
+- Query keys: [constants/queries.ts](mdc:src/constants/queries.ts)
+
+### Account Types Configuration
+Predefined account types with colors and labels:
+- Savings, Cash, FDR, DPS, Shanchaypatra, Other
+- Each type has associated colors for badges and UI consistency
+
+## Utility Functions
+
+### Utility Organization
+- Date utilities: [utils/date.ts](mdc:src/utils/date.ts)
+- Local storage utilities: [utils/local-storage.ts](mdc:src/utils/local-storage.ts)
+- String utilities: [utils/string.ts](mdc:src/utils/string.ts)
+
+## Development Practices
+
+### Code Quality
+- ESLint configuration: [eslint.config.js](mdc:eslint.config.js)
+- Prettier formatting with pre-commit hooks
+- TypeScript strict mode enabled
+
+### File Naming
+- Components: PascalCase with `.tsx` extension
+- Utilities: camelCase with `.ts` extension
+- Interfaces: PascalCase with `.interface.ts` suffix
+- Queries: camelCase with `.queries.ts` suffix
+
+### Error Handling
+- Consistent error interfaces in [interfaces/response.interface.ts](mdc:src/interfaces/response.interface.ts)
+- Error handling in React Query mutations and queries
+- User-friendly error messages in UI components
+
+## Key Features
+
+### Account Management
+- Create, view, and manage different account types
+- Transaction history with pagination
+- Account filtering by type
+- Balance tracking and display
+
+### Loan Management
+- Loan creation and management
+- EMI tracking and calculations
+- Interest management
+- Loan status monitoring
+
+### User Management
+- Authentication with JWT
+- Member management
+- Role-based access (implied by structure)
+
+## Development Commands
+
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run lint         # Run ESLint
+npm run format       # Format code with Prettier
+npm run preview      # Preview production build
+```
+
+## Best Practices
+
+### Component Development
+1. Keep components focused and single-purpose
+2. Use TypeScript interfaces for all props
+3. Implement proper loading and error states
+4. Use Mantine components consistently
+5. Follow the established file structure
+
+### Data Fetching
+1. Always use React Query for API calls
+2. Implement proper error handling
+3. Use centralized query keys
+4. Invalidate queries after mutations
+5. Implement optimistic updates where appropriate
+
+### State Management
+1. Use Zustand for global state only
+2. Keep local state in components when possible
+3. Persist important state (auth, theme, user data)
+4. Use proper TypeScript interfaces for store
+
+### Styling
+1. Use Mantine components as primary UI building blocks
+2. Maintain consistent spacing and typography
+3. Implement proper responsive design
+4. Use theme colors for consistency
+5. Handle dark/light themes properly

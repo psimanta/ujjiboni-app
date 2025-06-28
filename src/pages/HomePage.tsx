@@ -1,4 +1,4 @@
-import { Container, Title, Text, Stack, Card, Group, Badge, NumberFormatter } from '@mantine/core';
+import { Container, Title, Text, Stack, Card, Group, NumberFormatter } from '@mantine/core';
 import { IconLayoutDashboard } from '@tabler/icons-react';
 import { useStore } from '../store';
 import { useLoanStatsQuery } from '../queries/loan.queries';
@@ -8,7 +8,10 @@ export function HomePage() {
   const { data: loanStats } = useLoanStatsQuery();
   const loans = loanStats?.loans || [];
 
-  const totalOutstandingBalance = loans.reduce((acc, loan) => acc + loan.outstandingBalance, 0);
+  const totalOutstandingBalance = loans.reduce(
+    (acc, loan) => acc + (loan.outstandingBalance || 0),
+    0
+  );
   const totalInterestDue = loans.reduce(
     (acc, loan) =>
       acc +
@@ -30,18 +33,18 @@ export function HomePage() {
         </Stack>
 
         {/* Status Section */}
-        <Group gap="md">
+        {/* <Group gap="md">
           <Badge variant="light" color="green" size="lg">
             System Online
           </Badge>
           <Badge variant="light" color="blue" size="lg">
             All Services Running
           </Badge>
-        </Group>
+        </Group> */}
 
         {/* Quick Stats */}
-        <Group gap="md" w="100%" maw={600}>
-          <Card shadow="xs" padding="md" radius="md" flex={1}>
+        <Group gap="md" w="100%" maw={600} wrap="wrap">
+          <Card shadow="xs" padding="md" radius="md">
             <Stack gap="xs" align="center">
               <Text size="xl" fw={700} c="orange">
                 {loans.length}
@@ -52,7 +55,7 @@ export function HomePage() {
             </Stack>
           </Card>
 
-          <Card shadow="xs" padding="md" radius="md" flex={1}>
+          <Card shadow="xs" padding="md" radius="md">
             <Stack gap="xs" align="center">
               <Text size="xl" fw={700} c="blue">
                 <NumberFormatter
@@ -67,7 +70,7 @@ export function HomePage() {
             </Stack>
           </Card>
 
-          <Card shadow="xs" padding="md" radius="md" flex={1}>
+          <Card shadow="xs" padding="md" radius="md">
             <Stack gap="xs" align="center">
               <Text size="xl" fw={700} c="red">
                 <NumberFormatter value={totalInterestDue} prefix="৳ " thousandSeparator="," />

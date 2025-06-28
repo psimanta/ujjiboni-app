@@ -1,9 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from './api';
 import { QUERY_KEYS } from '../constants/queries';
-import type { IResponseError, IResponseGeneric } from '../interfaces/response.interface';
+import type { IResponseError } from '../interfaces/response.interface';
 import type {
-  ILoanEMI,
   ILoanCreationResponse,
   ILoansResponse,
   ILoanResponse,
@@ -12,11 +11,9 @@ import type {
   ILoanEMICreationResponse,
   ICreateLoanInterestPayload,
   ILoanInterestsResponse,
+  ILoanEMIsResponse,
+  ILoanStatsResponse,
 } from '../interfaces/loan.interface';
-
-interface ILoanEMIsResponse extends IResponseGeneric {
-  payments: ILoanEMI[];
-}
 
 export const useLoansQuery = (
   page: number = 1,
@@ -141,7 +138,7 @@ export const useCreateLoanInterestMutation = () => {
 };
 
 export const useLoanStatsQuery = () => {
-  return useQuery<IResponseGeneric, IResponseError>({
+  return useQuery<ILoanStatsResponse, IResponseError>({
     queryKey: [QUERY_KEYS.LOAN_STATS],
     queryFn: async () => {
       const { data } = await api.get('/loans/member/stats');
