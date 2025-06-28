@@ -48,11 +48,19 @@ export const useCreateAccountMutation = () => {
   });
 };
 
-export const useAccountsQuery = () => {
+export const useAccountsQuery = ({
+  sortBy = 'createdAt',
+  sortOrder = 'desc',
+}: { sortBy?: string; sortOrder?: string } = {}) => {
   return useQuery<IAccountResponse, IResponseError>({
     queryKey: [QUERY_KEYS.ACCOUNTS],
     queryFn: async () => {
-      const { data } = await api.get<IAccountResponse>('/accounts');
+      const { data } = await api.get<IAccountResponse>('/accounts', {
+        params: {
+          sortBy,
+          sortOrder,
+        },
+      });
       return data;
     },
   });

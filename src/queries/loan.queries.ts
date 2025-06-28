@@ -13,6 +13,7 @@ import type {
   ILoanInterestsResponse,
   ILoanEMIsResponse,
   ILoanStatsResponse,
+  IOrgLoanStatsResponse,
 } from '../interfaces/loan.interface';
 
 export const useLoansQuery = (
@@ -137,11 +138,21 @@ export const useCreateLoanInterestMutation = () => {
   });
 };
 
-export const useLoanStatsQuery = () => {
+export const useLoanMemberStatsQuery = () => {
   return useQuery<ILoanStatsResponse, IResponseError>({
     queryKey: [QUERY_KEYS.LOAN_STATS],
     queryFn: async () => {
       const { data } = await api.get('/loans/member/stats');
+      return data;
+    },
+  });
+};
+
+export const useOrgLoanStatsQuery = () => {
+  return useQuery<IOrgLoanStatsResponse, IResponseError>({
+    queryKey: [QUERY_KEYS.ORG_LOAN_STATS],
+    queryFn: async () => {
+      const { data } = await api.get('/loans/stats');
       return data;
     },
   });

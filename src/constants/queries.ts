@@ -9,4 +9,5 @@ export const QUERY_KEYS = {
   LOAN_EMIS: 'loan-emis',
   LOAN_INTERESTS: 'loan-interests',
   LOAN_STATS: 'loan-stats',
+  ORG_LOAN_STATS: 'org-loan-stats',
 };

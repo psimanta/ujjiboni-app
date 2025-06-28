@@ -128,3 +128,12 @@ export interface ILoanStatsResponse extends IResponseGeneric {
   totalOutstandingBalance: number;
   totalInterestDue: number;
 }
+
+export interface IOrgLoanStatsResponse extends IResponseGeneric {
+  data: {
+    activeLoans: number;
+    totalLoans: number;
+    totalOutstandingBalance: number;
+    totalInterestDue: number;
+  };
+}

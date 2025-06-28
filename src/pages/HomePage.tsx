@@ -1,12 +1,13 @@
 import { Container, Title, Text, Stack, Card, Group, NumberFormatter } from '@mantine/core';
 import { IconLayoutDashboard } from '@tabler/icons-react';
 import { useStore } from '../store';
-import { useLoanStatsQuery } from '../queries/loan.queries';
+import { useLoanMemberStatsQuery } from '../queries/loan.queries';
 import { LoansTable } from '../components/modules/home/LoansTable';
+import { OrganizationSummary } from '../components/modules/home/OrganizationSummary';
 
 export function HomePage() {
   const { user } = useStore(state => state);
-  const { data: loanStats } = useLoanStatsQuery();
+  const { data: loanStats } = useLoanMemberStatsQuery();
   const loans = loanStats?.loans || [];
 
   const totalOutstandingBalance = loans.reduce(
@@ -84,6 +85,7 @@ export function HomePage() {
         </Group>
 
         <LoansTable loans={loans} />
+        <OrganizationSummary />
       </Stack>
     </Container>
   );
