@@ -52,3 +52,28 @@ export const useProfileQuery = () => {
     retry: 3,
   });
 };
+
+export const usePasswordChangeMutation = () => {
+  return useMutation<
+    IResponseGeneric,
+    IResponseError,
+    { currentPassword: string; newPassword: string; confirmPassword: string }
+  >({
+    mutationFn: async ({
+      currentPassword,
+      newPassword,
+      confirmPassword,
+    }: {
+      currentPassword: string;
+      newPassword: string;
+      confirmPassword: string;
+    }) => {
+      const { data } = await api.post<IResponseGeneric>('/auth/change-password', {
+        currentPassword,
+        newPassword,
+        confirmPassword,
+      });
+      return data;
+    },
+  });
+};

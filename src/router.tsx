@@ -8,6 +8,7 @@ import { AccountDetailsPage } from './pages/AccountDetailsPage';
 import { LoansPage } from './pages/LoansPage';
 import { LoanDetailsPage } from './pages/LoanDetailsPage';
 import { MembersPage } from './pages/MembersPage';
+import { SettingsPage } from './pages/SettingsPage';
 
 export const AppRouter = () => {
   const { isAuthenticated } = useStore(state => state);
@@ -23,6 +24,7 @@ export const AppRouter = () => {
               <Route path="/loans" element={<LoansPage />} />
               <Route path="/loans/:id" element={<LoanDetailsPage />} />
               <Route path="/members" element={<MembersPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
             </>
           ) : (
             <>
