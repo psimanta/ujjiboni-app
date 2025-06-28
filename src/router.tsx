@@ -9,6 +9,7 @@ import { LoansPage } from './pages/LoansPage';
 import { LoanDetailsPage } from './pages/LoanDetailsPage';
 import { MembersPage } from './pages/MembersPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { SetupPasswordPage } from './pages/SetupPasswordPage';
 
 export const AppRouter = () => {
   const { isAuthenticated } = useStore(state => state);
@@ -29,6 +30,7 @@ export const AppRouter = () => {
           ) : (
             <>
               <Route path="/login" element={<Login />} />
+              <Route path="/setup-password" element={<SetupPasswordPage />} />
             </>
           )}
           <Route path="*" element={<Navigate to={isAuthenticated ? '/' : '/login'} replace />} />

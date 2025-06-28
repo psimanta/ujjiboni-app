@@ -2,14 +2,19 @@ import { Table, Text, Badge, Group, Stack, Card, Title, Avatar } from '@mantine/
 import { useStore } from '../store';
 import { getInitials } from '../utils/string';
 import { formatDate } from '../utils/date';
+import { InviteMembers } from '../components/modules/members/InviteMembers';
 
 export function MembersPage() {
-  const { members } = useStore(state => state);
+  const { members, user } = useStore(state => state);
+  const isAdmin = user?.role === 'ADMIN';
+
   return (
     <Stack gap="lg">
       <Title order={2} size="h3" fw={600}>
         Members
       </Title>
+
+      {isAdmin && <InviteMembers />}
 
       <Card shadow="sm" padding="0" radius="lg" withBorder>
         <Table.ScrollContainer minWidth={800}>

@@ -94,6 +94,7 @@ export function ChangePassword() {
               label="Current Password"
               placeholder="Enter your current password"
               required
+              radius="md"
               {...form.getInputProps('currentPassword')}
               disabled={isPending}
             />
@@ -103,6 +104,7 @@ export function ChangePassword() {
               placeholder="Enter your new password"
               description="Password must be at least 8 characters with uppercase, lowercase, and number"
               required
+              radius="md"
               {...form.getInputProps('newPassword')}
               disabled={isPending}
             />
@@ -111,6 +113,7 @@ export function ChangePassword() {
               label="Confirm New Password"
               placeholder="Confirm your new password"
               required
+              radius="md"
               {...form.getInputProps('confirmPassword')}
               disabled={isPending}
             />
@@ -119,6 +122,8 @@ export function ChangePassword() {
               <Button
                 type="button"
                 variant="light"
+                radius="md"
+                size="sm"
                 onClick={() => {
                   form.reset();
                   setError(null);
@@ -128,7 +133,13 @@ export function ChangePassword() {
               >
                 Reset
               </Button>
-              <Button type="submit" loading={isPending} leftSection={<IconLock size={16} />}>
+              <Button
+                type="submit"
+                loading={isPending}
+                leftSection={<IconLock size={16} />}
+                radius="md"
+                size="sm"
+              >
                 Change Password
               </Button>
             </Group>
