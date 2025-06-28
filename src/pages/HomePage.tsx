@@ -2,6 +2,7 @@ import { Container, Title, Text, Stack, Card, Group, NumberFormatter } from '@ma
 import { IconLayoutDashboard } from '@tabler/icons-react';
 import { useStore } from '../store';
 import { useLoanStatsQuery } from '../queries/loan.queries';
+import { LoansTable } from '../components/modules/home/LoansTable';
 
 export function HomePage() {
   const { user } = useStore(state => state);
@@ -81,6 +82,8 @@ export function HomePage() {
             </Stack>
           </Card>
         </Group>
+
+        <LoansTable loans={loans} />
       </Stack>
     </Container>
   );
